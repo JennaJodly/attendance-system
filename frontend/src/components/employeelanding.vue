@@ -33,7 +33,7 @@ export default {
     return {
       employees: [],
       headers: [
-        { title: 'ID', key: 'id' },
+        { title: 'S No', key: 'id' },
         { title: 'Name', key: 'name' },
         { title: 'Email', key: 'email' },
         { title: 'Phone', key: 'phone' },

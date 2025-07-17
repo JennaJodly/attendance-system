@@ -1,19 +1,39 @@
 <template>
   <v-app>
-    <!-- Fixed Top Toolbar -->
-    <v-app-bar app style="background: linear-gradient(to left, #001f3f, #336699); /* light to dark navy */
-  color: white;
-  transition: width 0.2s ease;" dark>
+    <!-- App Bar - Fixed at top -->
+    <v-app-bar
+      app
+      fixed
+      style="background: linear-gradient(to left, #001f3f, #336699); color: white; transition: width 0.2s ease;"
+      dark
+      elevation="4"
+    >
       <v-app-bar-nav-icon @click="togglePinned" />
+
       <v-toolbar-title class="ml-2 d-flex align-center" style="padding-bottom: 7px;">
         <img src="@/assets/logo.png" alt="Logo" height="30" class="mr-2" />
         Millennium Industries
       </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-menu offset-y>
+        <template #activator="{ props }">
+          <v-btn icon v-bind="props">
+            <v-icon>mdi-account-circle</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item @click="loginAsAdmin">
+            <v-list-item-title>Login as Admin</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
-    <!-- Sidebar -->
+    <!-- Sidebar - Fixed on left -->
     <v-navigation-drawer
       app
+      fixed
       :permanent="true"
       :width="hovering || pinned ? 200 : 50"
       class="sidebar"
@@ -41,8 +61,8 @@
       </v-list>
     </v-navigation-drawer>
 
-    <!-- Main Page Content -->
-    <v-main class="fill-height">
+    <!-- Main Page Content - Scrollable below app bar -->
+    <v-main class="main-content">
       <router-view />
     </v-main>
   </v-app>
@@ -67,15 +87,36 @@ export default {
     togglePinned() {
       this.pinned = !this.pinned;
     },
+    loginAsAdmin() {
+      // Add your login logic here
+      console.log("Login as Admin clicked");
+    },
   },
 };
 </script>
 
 <style scoped>
+/* Ensure the app takes full height */
+.v-app {
+  min-height: 100vh;
+}
+
+/* Sidebar styling */
 .sidebar {
-  background-color: #0c1a45;
+  background-color: #0c1a45 !important;
   color: white;
   transition: width 0.2s ease;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Main content area */
+.main-content {
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 64px); /* Subtract app bar height */
+  overflow-y: auto;
 }
 
 /* Flex row for icon and title */
@@ -88,21 +129,50 @@ export default {
 .sidebar-title {
   margin-left: 10px;
   font-size: 16px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
 }
 
 .v-list-item {
-  color: white;
+  color: white !important;
   transition: all 0.2s ease;
   min-height: 48px;
   padding-left: 8px;
 }
 
 .v-list-item:hover {
-  background-color: #1a2d5a;
+  background-color: #1a2d5a !important;
+}
+
+.v-list-item--active {
+  background-color: #336699 !important;
 }
 
 .v-icon {
-  color: white;
+  color: white !important;
   font-size: 20px !important;
+}
+
+/* App bar specific styling */
+.v-app-bar {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
+
+/* Ensure proper spacing for content */
+.v-main {
+  padding-top: 64px !important; /* App bar height */
+}
+
+/* Additional fixes for Vuetify layout */
+.v-app-bar--fixed {
+  position: fixed !important;
+}
+
+.v-navigation-drawer--fixed {
+  position: fixed !important;
 }
 </style>

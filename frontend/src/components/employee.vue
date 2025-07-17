@@ -1,7 +1,7 @@
 <template>
   <div class="ma-6">
-    <v-card elevation="5" class="px-6 py-2">
-      <v-row class="d-flex justify-space-between align-center mb-2">
+    <v-card elevation="5" class="px-6">
+      <v-row class="d-flex justify-space-between align-center mb-2 pt-5">
       <h2>Add Employee Details</h2>
       <v-btn color="primary" size="small" @click="goback">Back</v-btn>
     </v-row>
@@ -661,7 +661,6 @@ const removeBankRow = idx => { if (bankDetails.value.length > 1) bankDetails.val
 const goToPrevTab = () => { if (tab.value > 0) tab.value-- }
 
 const addBranch = () => {
-  // logic to add a branch (e.g., open dialog or prompt)
   alert('Add Branch clicked');
 };
 const addDepartment = () => {

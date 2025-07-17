@@ -14,15 +14,6 @@
   <v-btn color="success" class="mt-3" @click="capturePhoto">Capture Photo</v-btn>
 </div>
 
-
-      <!-- Captured Image Preview -->
-      <!-- <div v-if="capturedImage" class="mt-4">
-        <img :src="capturedImage" alt="Captured" width="200" />
-        <div class="mt-2">
-          <v-btn color="green" @click="Attendance('IN')">Mark Attendance</v-btn>
-          <v-btn color="red" class="ml-2" @click="markAttendance('OUT')">Attendance Out</v-btn>
-        </div>
-      </div> -->
     </div>
   </v-container>
 </template>
