@@ -16,13 +16,13 @@
 
 
       <!-- Captured Image Preview -->
-      <div v-if="capturedImage" class="mt-4">
+      <!-- <div v-if="capturedImage" class="mt-4">
         <img :src="capturedImage" alt="Captured" width="200" />
         <div class="mt-2">
-          <v-btn color="green" @click="markAttendance('IN')">Attendance In</v-btn>
+          <v-btn color="green" @click="Attendance('IN')">Mark Attendance</v-btn>
           <v-btn color="red" class="ml-2" @click="markAttendance('OUT')">Attendance Out</v-btn>
         </div>
-      </div>
+      </div> -->
     </div>
   </v-container>
 </template>
@@ -62,6 +62,7 @@ export default {
       this.capturedImage = canvas.toDataURL("image/jpeg");
       video.srcObject.getTracks().forEach((track) => track.stop());
       this.showCamera = false;
+      this.$router.push('/attendance');
     },
     markAttendance(type) {
       const payload = {

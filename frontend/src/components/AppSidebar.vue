@@ -57,7 +57,7 @@ export default {
       menuItems: [
         { title: "Dashboard", icon: "mdi-view-dashboard", route: "/" },
         { title: "Attendance", icon: "mdi-fingerprint", route: "/attendance" },
-        { title: "Employees", icon: "mdi-account-group", route: "/employee" },
+        { title: "Employee", icon: "mdi-account-group", route: "/employee" },
         { title: "Reports", icon: "mdi-chart-box", route: "/reports" },
         { title: "Settings", icon: "mdi-cog", route: "/settings" },
       ],

@@ -2,8 +2,11 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
+import GlobalLoader from './components/GearLoader.vue'
 
-createApp(App)
-  .use(router)
-  .use(vuetify)
-  .mount('#app')
+const app = createApp(App)
+app.component('GlobalLoader', GlobalLoader)
+
+app.use(router)
+app.use(vuetify)
+app.mount('#app')

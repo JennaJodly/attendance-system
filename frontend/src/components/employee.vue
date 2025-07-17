@@ -1,7 +1,10 @@
 <template>
   <div class="ma-6">
-    <v-card elevation="2" class="pa-6">
-      <h2 class="text-h5 font-weight-bold mb-4">Add Employee Details</h2>
+    <v-card elevation="5" class="px-6 py-2">
+      <v-row class="d-flex justify-space-between align-center mb-2">
+      <h2>Add Employee Details</h2>
+      <v-btn color="primary" size="small" @click="goback">Back</v-btn>
+    </v-row>
 
       <v-form @submit.prevent="submitForm">
         <v-row dense wrap>
@@ -234,7 +237,7 @@
                 </v-row>
                 <v-row>
                     <v-col cols="12" style="text-align: right;">
-                        <v-btn color="primary" class="mt-4" @click="goToNextTab">Next</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4" @click="goToNextTab">Next</v-btn>
                     </v-col>
                 </v-row>
               </v-form>
@@ -288,10 +291,10 @@
                 </v-row>
                 <v-row style="justify-content: space-between;">
                     <v-col>
-                        <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
                     </v-col>
                     <v-col style="text-align: right;">
-                        <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
                     </v-col>
                 </v-row>
                 
@@ -331,10 +334,10 @@
                 <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn> -->
                 <v-row style="justify-content: space-between;">
                     <v-col>
-                        <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
                     </v-col>
                     <v-col style="text-align: right;">
-                        <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
                     </v-col>
                 </v-row>
               </v-form>
@@ -371,10 +374,10 @@
                 <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn> -->
                 <v-row style="justify-content: space-between;">
                     <v-col>
-                        <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
                     </v-col>
                     <v-col style="text-align: right;">
-                        <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
                     </v-col>
                 </v-row>
               </v-form>
@@ -415,10 +418,10 @@
                 <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn> -->
                 <v-row style="justify-content: space-between;">
                     <v-col>
-                        <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
                     </v-col>
                     <v-col style="text-align: right;">
-                        <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
                     </v-col>
                 </v-row>
               </v-form>
@@ -452,10 +455,10 @@
                 <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn> -->
                 <v-row style="justify-content: space-between;">
                     <v-col>
-                        <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
                     </v-col>
                     <v-col style="text-align: right;">
-                        <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
                     </v-col>
                 </v-row>
               </v-form>
@@ -486,10 +489,10 @@
                 <v-btn type="submit" color="success" class="mt-4 ml-2">Submit</v-btn> -->
                 <v-row style="justify-content: space-between;">
                     <v-col>
-                        <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
+                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
                     </v-col>
                     <v-col style="text-align: right;">
-                        <v-btn type="submit" color="success" class="mt-4 ml-2">Submit</v-btn>
+                        <v-btn type="submit" size="small" color="success" class="mt-4 ml-2">Submit</v-btn>
                     </v-col>
                 </v-row>
               </v-form>
@@ -508,6 +511,13 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function goback() {
+  router.push('/employee')
+}
 
 const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
 
@@ -666,7 +676,10 @@ const addChannelDivision = () => { alert('Add Channel/Division clicked'); };
 const addSubChannel = () => { alert('Add Sub Channel/Sub Division clicked'); };
 const addCategoryProduct = () => { alert('Add Category/Product clicked'); };
 const addEmployeeGrade = () => { alert('Add Employee Grade clicked'); };
+
 </script>
+
+
 
 <style>
 .v-input__prepend {
