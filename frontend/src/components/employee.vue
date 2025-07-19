@@ -21,7 +21,7 @@
             <v-text-field label="Username" v-model="form.username" hint="Min 5 & Max 15 characters" />
           </v-col>
           <v-col cols="12" sm="6" md="3">
-            <v-text-field label="Employee No *" v-model="form.employeeId" required />
+            <v-text-field label="Employee No *" v-model="form.empNo" required />
           </v-col>
           <v-col cols="12" sm="6" md="3">
             <v-text-field label="Email *" v-model="form.email" required />
@@ -73,15 +73,15 @@
             <v-text-field label="Official No 1" v-model="form.officialNo" />
           </v-col>
           <v-col cols="12" sm="6" md="3">
-            <v-text-field label="WhatsApp No" v-model="form.whatsapp" />
+            <v-text-field label="WhatsApp No" v-model="form.whatsappNo" />
           </v-col>
 
           <!-- Important Dates -->
           <v-col cols="12" sm="6" md="3">
-            <v-text-field label="Birthday Date" v-model="form.birthday" type="date" />
+            <v-text-field label="Birthday Date" v-model="form.bdayDate" type="date" />
           </v-col>
           <v-col cols="12" sm="6" md="3">
-            <v-text-field label="Date of Joining" v-model="form.joiningDate" type="date" />
+            <v-text-field label="Date of Joining" v-model="form.dateOfJoining" type="date" />
           </v-col>
 
           <!-- Other Details -->
@@ -102,7 +102,7 @@
 
           <!-- Emergency Contact -->
           <v-col cols="12" sm="6" md="3">
-            <v-text-field label="Emergency Contact No" v-model="form.emergencyContact" />
+            <v-text-field label="Emergency Contact No" v-model="form.emergency_contact_no" />
           </v-col>
 
           <!-- Photo Upload -->
@@ -338,7 +338,7 @@
                         <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
                     </v-col>
                     <v-col style="text-align: right;">
-                        <v-btn type="submit" size="small" color="success" class="mt-4 ml-2">Submit</v-btn>
+                        <v-btn @click="submitForm" size="small" color="success" class="mt-4 ml-2">Submit</v-btn>
                     </v-col>
                 </v-row>
               </v-form>
@@ -381,7 +381,7 @@ const form = ref({
   lastName: '',
   recruited: 'No',
   username: '',
-  employeeId: '',
+  empNo: '',
   email: '',
   address1: '',
   address2: '',
@@ -389,12 +389,12 @@ const form = ref({
   state: '',
   city: '',
   officialNo: '',
-  whatsapp: '',
-  birthday: '',
-  joiningDate: '',
+  whatsappNo: '',
+  bdayDate: '',
+  dateOfJoining: '',
   gender: '',
   bloodGroup: '',
-  emergencyContact: '',
+  emergencyContactNo: '',
   photo: ''
 })
 
@@ -432,18 +432,25 @@ const handlePhotoUpload = (e) => {
 const submitForm = async () => {
   const payload = {
     ...form.value,
-    name: `${form.value.firstName} ${form.value.lastName}`
+    name: `${form.value.firstName} ${form.value.lastName}`,
+    address: form.address1 + form.address2,
+    countryCode: form.value.country?.code || '',
+    stateCode: form.value.state?.code || '',
+    cityCode: form.value.city?.code || '',
   }
 
+  console.log("Submitting payload:", payload)
+
   try {
-    await axios.post('http://localhost:8080/api/users/add', payload)
+    const res = await axios.post('http://localhost:9090/api/employee/add', payload)
+    console.log("Response:", res)
     alert('Employee added successfully!')
-    // reset form or navigate
   } catch (err) {
-    console.error(err)
+    console.error("Submission error:", err)
     alert('Failed to add employee')
   }
 }
+
 
 const loadStates = async () => {
   // console.log('Loading states for country:', country)
@@ -472,6 +479,7 @@ const loadCities = async () => {
     }
   }
 };
+
 
 // Tabs logic
 const tab = ref(0)
