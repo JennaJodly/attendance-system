@@ -7,7 +7,6 @@ com\example\attendance\repositories\CountrymstrRepository.class
 com\example\attendance\entities\StateMstr.class
 com\example\attendance\repositories\CityMstrRepository.class
 com\example\attendance\AttendanceApplication.class
-com\example\attendance\controllers\AttendanceController.class
 com\example\attendance\entities\countrymstr.class
 com\example\attendance\repositories\StateMstrRepository.class
 com\example\attendance\controllers\CityMstrController.class
