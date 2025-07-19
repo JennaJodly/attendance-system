@@ -35,13 +35,37 @@
             <v-text-field label="Address Line 2" v-model="form.address2" />
           </v-col>
           <v-col cols="12" sm="6" md="3">
-            <v-text-field label="Country" v-model="form.country" />
+            <!-- <v-autocomplete label="Country" v-model="form.country" /> -->
+            <v-autocomplete
+              v-model="form.country"
+              :items="countries"
+              item-title="name"
+              item-value="code"
+              label="Select Country"
+              return-object
+               @update:model-value="loadStates"
+            ></v-autocomplete>
           </v-col>
           <v-col cols="12" sm="6" md="3">
-            <v-text-field label="State" v-model="form.state" />
+            <v-autocomplete
+              v-model="form.state"
+              :items="states"
+              label="State"
+               item-title="name"
+              item-value="code"
+              return-object
+               @update:model-value="loadCities"
+            />
           </v-col>
           <v-col cols="12" sm="6" md="3">
-            <v-text-field label="City" v-model="form.city" />
+            <v-autocomplete
+              v-model="form.city"
+              :items="cities"
+              label="City"
+               item-title="name"
+              item-value="code"
+              return-object
+            />
           </v-col>
 
           <!-- Contact Info -->
@@ -242,66 +266,9 @@
                 </v-row>
               </v-form>
             </template>
-            <!-- Statutory Info Tab -->
-            <template v-else-if="tab === 1">
-              <v-form>
-                <v-row dense v-for="(stat, idx) in statutoryInfo" :key="idx" class="align-center mb-2">
-                  <v-col cols="12" sm="3">
-                    <v-autocomplete
-                      label="Name"
-                      :items="statutoryNameOptions"
-                      v-model="stat.name"
-                      dense
-                      required
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field
-                      label="Registration No"
-                      v-model="stat.registrationNo"
-                      dense
-                      required
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-file-input
-                      label="Document Upload"
-                      v-model="stat.document"
-                      dense
-                      show-size
-                      @change="onStatutoryFileChange($event, idx)"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="2">
-                    <v-text-field
-                      label="Expiry if relevant"
-                      v-model="stat.expiry"
-                      type="date"
-                      dense
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="1" class="d-flex align-center">
-                    <v-btn icon class="mr-2" color="success"  density="compact" size="small" @click="addStatutoryRow" v-if="idx === statutoryInfo.length - 1">
-                      <v-icon size="18">mdi-plus-circle</v-icon>
-                    </v-btn>
-                    <v-btn icon color="error" density="compact" size="small" @click="removeStatutoryRow(idx)" v-if="statutoryInfo.length > 1">
-                      <v-icon size="18">mdi-minus-circle</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-                <v-row style="justify-content: space-between;">
-                    <v-col>
-                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                    </v-col>
-                    <v-col style="text-align: right;">
-                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
-                    </v-col>
-                </v-row>
-                
-              </v-form>
-            </template>
+
             <!-- Documents Tab -->
-            <template v-else-if="tab === 2">
+            <template v-else-if="tab === 1">
               <v-form>
                 <v-row dense v-for="(doc, idx) in documents" :key="idx" class="align-center mb-2">
                   <v-col cols="12" sm="3">
@@ -342,129 +309,8 @@
                 </v-row>
               </v-form>
             </template>
-            <!-- Experience Tab -->
-            <template v-else-if="tab === 3">
-              <v-form>
-                <v-row dense v-for="(exp, idx) in experience" :key="idx" class="align-center mb-2">
-                  <v-col cols="12" sm="2">
-                    <v-text-field label="Company Name" v-model="exp.company" dense />
-                  </v-col>
-                  <v-col cols="12" sm="2">
-                    <v-text-field label="From Date" v-model="exp.from" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="2">
-                    <v-text-field label="To Date" v-model="exp.to" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="2">
-                    <v-text-field label="Designation" v-model="exp.designation" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Designation in brief" v-model="exp.brief" dense />
-                  </v-col>
-                  <v-col cols="12" sm="1" class="d-flex align-center">
-                    <v-btn icon color="success" class="mr-2" density="compact" size="small" @click="addExperienceRow" v-if="idx === experience.length - 1">
-                      <v-icon size="18">mdi-plus-circle</v-icon>
-                    </v-btn>
-                    <v-btn icon color="error" density="compact" size="small" @click="removeExperienceRow(idx)" v-if="experience.length > 1">
-                      <v-icon size="18">mdi-minus-circle</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-                <!-- <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn> -->
-                <v-row style="justify-content: space-between;">
-                    <v-col>
-                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                    </v-col>
-                    <v-col style="text-align: right;">
-                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
-                    </v-col>
-                </v-row>
-              </v-form>
-            </template>
-            <!-- Increment Details Tab -->
-            <template v-else-if="tab === 4">
-              <v-form>
-                <v-row dense>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Last Increment Date" v-model="incrementDetails.lastIncrementDate" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Last Increment Amount" v-model="incrementDetails.lastIncrementAmount" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Last Promotion Date" v-model="incrementDetails.lastPromotionDate" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Next Promotion Due On" v-model="incrementDetails.nextPromotionDueOn" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Last Promotion Date" v-model="incrementDetails.lastPromotionDate2" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Training Due On" v-model="incrementDetails.trainingDueOn" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Reason" v-model="incrementDetails.reason" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Reprimanded From" v-model="incrementDetails.reprimandedFrom" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Reprimanded To" v-model="incrementDetails.reprimandedTo" type="date" dense />
-                  </v-col>
-                </v-row>
-                <!-- <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn> -->
-                <v-row style="justify-content: space-between;">
-                    <v-col>
-                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                    </v-col>
-                    <v-col style="text-align: right;">
-                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
-                    </v-col>
-                </v-row>
-              </v-form>
-            </template>
-            <!-- Investment Declaration Tab -->
-            <template v-else-if="tab === 5">
-              <v-form>
-                <v-row dense v-for="(inv, idx) in investments" :key="idx" class="align-center mb-2">
-                  <v-col cols="12" sm="3">
-                    <v-text-field label="Policy Name" v-model="inv.policyName" dense />
-                  </v-col>
-                  <v-col cols="12" sm="2">
-                    <v-text-field label="Start Date" v-model="inv.startDate" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="2">
-                    <v-text-field label="End Date" v-model="inv.endDate" type="date" dense />
-                  </v-col>
-                  <v-col cols="12" sm="2">
-                    <v-text-field label="Amount" v-model="inv.amount" dense />
-                  </v-col>
-                  <v-col cols="12" sm="1" class="d-flex align-center">
-                    <v-btn icon color="success" class="mr-2" density="compact" size="small" @click="addInvestmentRow" v-if="idx === investments.length - 1">
-                      <v-icon size="18">mdi-plus-circle</v-icon>
-                    </v-btn>
-                    <v-btn icon color="error" density="compact" size="small" @click="removeInvestmentRow(idx)" v-if="investments.length > 1">
-                      <v-icon size="18">mdi-minus-circle</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-                <!-- <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn> -->
-                <v-row style="justify-content: space-between;">
-                    <v-col>
-                        <v-btn color="primary" size="small" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                    </v-col>
-                    <v-col style="text-align: right;">
-                        <v-btn color="primary" size="small" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn>
-                    </v-col>
-                </v-row>
-              </v-form>
-            </template>
             <!-- Bank Details Tab (last tab) -->
-            <template v-else-if="tab === 6">
+            <template v-else-if="tab === 2">
               <v-form @submit.prevent="submitForm">
                 <v-row dense v-for="(bank, idx) in bankDetails" :key="idx" class="align-center mb-2">
                   <v-col cols="12" sm="3">
@@ -497,10 +343,6 @@
                 </v-row>
               </v-form>
             </template>
-            <!-- Fallback for other tabs -->
-            <template v-else>
-              <p>{{ tabItems[tab].label }} content goes here.</p>
-            </template>
           </div>
         </v-tab-item>
       </v-tabs-items>
@@ -509,11 +351,24 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted  } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const countries = ref([])
+const states = ref([])
+const cities = ref([])
+// const loading = ref(false)
+onMounted(async () => {
+  try {
+    const res = await axios.get('http://localhost:9090/api/countries')
+    countries.value = res.data
+  } catch (err) {
+    console.error('Failed to load countries:', err)
+  } finally {
+  }
+})
 
 function goback() {
   router.push('/employee')
@@ -564,31 +419,6 @@ const otherDetails = ref({
   effectiveFrom: ''
 })
 
-// Statutory Info logic
-const statutoryNameOptions = [
-  'Aadhaar', 'Voter', 'PAN', 'Passport', 'Driving License', 'ESIC', 'PF', 'Other'
-]
-const statutoryInfo = ref([
-  { name: '', registrationNo: '', document: null, expiry: '' }
-])
-
-const addStatutoryRow = () => {
-  statutoryInfo.value.push({ name: '', registrationNo: '', document: null, expiry: '' })
-}
-const removeStatutoryRow = (idx) => {
-  if (statutoryInfo.value.length > 1) statutoryInfo.value.splice(idx, 1)
-}
-const onStatutoryFileChange = (e, idx) => {
-  const file = e.target?.files?.[0] || e
-  if (file) {
-    statutoryInfo.value[idx].document = file
-  }
-}
-const saveStatutoryInfo = () => {
-  // Save logic: send statutoryInfo.value to backend or merge with main form
-  // Example: console.log('Saving statutory info', statutoryInfo.value)
-  alert('Statutory Info saved!')
-}
 
 const handlePhotoUpload = (e) => {
   const file = e.target.files[0]
@@ -615,15 +445,39 @@ const submitForm = async () => {
   }
 }
 
+const loadStates = async () => {
+  // console.log('Loading states for country:', country)
+  console.log("Loading", form._rawValue.country.code)
+  if (form._rawValue.country) {
+    const res = await axios.get(`http://localhost:9090/api/states/by-country-code/${form._rawValue.country.code}`)
+    states.value = res.data
+  }
+}
+const loadCities = async () => {
+  const stateCode = form._rawValue.state?.code;
+  const countryCode = form._rawValue.country?.code;
+
+  if (stateCode && countryCode) {
+    try {
+      const res = await axios.get('http://localhost:9090/api/cities/by-country-and-state', {
+        params: {
+          stateCode,
+          countryCode
+        }
+      });
+      cities.value = res.data; // or whatever you're using to store city data
+    } catch (error) {
+      console.error('Error loading cities:', error);
+      cities.value = [];
+    }
+  }
+};
+
 // Tabs logic
 const tab = ref(0)
 const tabItems = [
   { label: 'Other Details', component: null },
-  { label: 'Statutory Info', component: null },
   { label: 'Documents', component: null },
-  { label: 'Experience', component: null },
-  { label: 'Increment Details', component: null },
-  { label: 'Investment Declaration', component: null },
   { label: 'Bank Details', component: null }
 ]
 
@@ -631,27 +485,12 @@ const goToNextTab = () => {
   if (tab.value < tabItems.length - 1) tab.value++
 }
 const documents = ref([{ name: '', number: '', start: '', expiry: '', file: null }])
-const experience = ref([{ company: '', from: '', to: '', designation: '', brief: '' }])
-const investments = ref([{ policyName: '', startDate: '', endDate: '', amount: '' }])
 const bankDetails = ref([{ bankName: '', accountNo: '', ifsc: '' }])
-const incrementDetails = ref({
-  lastIncrementDate: '', lastIncrementAmount: '', lastPromotionDate: '',
-  nextPromotionDueOn: '', lastPromotionDate2: '', trainingDueOn: '',
-  reason: '', reprimandedFrom: '', reprimandedTo: ''
-})
 
 // Documents
 const addDocumentRow = () => { documents.value.push({ name: '', number: '', start: '', expiry: '', file: null }) }
 const removeDocumentRow = idx => { if (documents.value.length > 1) documents.value.splice(idx, 1) }
 const onDocumentUpload = idx => { /* handle upload logic if needed */ }
-
-// Experience
-const addExperienceRow = () => { experience.value.push({ company: '', from: '', to: '', designation: '', brief: '' }) }
-const removeExperienceRow = idx => { if (experience.value.length > 1) experience.value.splice(idx, 1) }
-
-// Investments
-const addInvestmentRow = () => { investments.value.push({ policyName: '', startDate: '', endDate: '', amount: '' }) }
-const removeInvestmentRow = idx => { if (investments.value.length > 1) investments.value.splice(idx, 1) }
 
 // Bank Details
 const addBankRow = () => { bankDetails.value.push({ bankName: '', accountNo: '', ifsc: '' }) }
@@ -684,4 +523,11 @@ const addEmployeeGrade = () => { alert('Add Employee Grade clicked'); };
 .v-input__prepend {
   display: none !important;
 }
+/* Hide or override webpack dev server error overlay */
+#webpack-dev-server-client-overlay {
+  position: unset !important;
+  pointer-events: none !important; /* Optional: allow clicks to pass through */
+  z-index: -1 !important;          /* Push behind everything */
+}
+
 </style>
