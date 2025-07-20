@@ -1,0 +1,41 @@
+package com.example.attendance.entities;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "subdivisionmstr")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class SubDivisionMstr {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(length = 10)
+    private String code;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    // Many SubDivisions belong to one Division
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "division_id", nullable = false)
+    private DivisionMstr division;
+}
