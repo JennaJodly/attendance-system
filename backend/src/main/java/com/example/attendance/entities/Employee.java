@@ -21,11 +21,11 @@ public class Employee {
     private String lastName;
     private String username;
     private String email;
-    
+
     @Column(name = "emp_no", length = 20, unique = true)
     private String empNo;
 
-    @Column(length = 1000) // To allow more than 100 characters
+    @Column(columnDefinition = "TEXT") // ✅ For long string (not LOB)
     private String address;
 
     private String countryCode;
@@ -42,12 +42,10 @@ public class Employee {
     private String bloodGroup;
     private String emergencyContactNo;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT") // ✅ Just a large String
     private String photo; // base64
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT") // ✅ Just a large String
     private String fingerprint; // base64
 
     private Integer branch;

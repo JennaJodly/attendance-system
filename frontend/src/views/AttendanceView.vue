@@ -1,5 +1,7 @@
 <template>
   <v-container fluid class="pt-6 px-6">
+    <GearLoader  :show="loading" />
+
     <v-row justify="space-between">
       <!-- Attendance Card -->
       <v-col cols="12" md="6">
@@ -10,13 +12,20 @@
             <v-img :src="photoUrl" max-width="120" class="rounded-circle" />
           </v-row>
           <v-row justify="center">
-            <v-btn color="primary" size="small" class="ma-2" @click="markIn" v-if="!attendanceIn">ATTENDANCE IN</v-btn>
-            <v-btn color="primary" size="small" class="ma-2" @click="markOut" v-else-if="attendanceIn && !attendanceOut">ATTENDANCE OUT</v-btn>
+            <v-btn color="primary" size="small" class="ma-2" @click="markIn" v-if="!inMarked">ATTENDANCE IN</v-btn>
+            <v-btn color="primary" size="small" class="ma-2" @click="markOut" v-else-if="inMarked && !outMarked">ATTENDANCE OUT</v-btn>
             <v-btn color="primary" size="small" class="ma-2" disabled v-else>ATTENDANCE MARKED</v-btn>
           </v-row>
-          <div v-if="attendanceIn" class="mt-2"><strong>Attendance In:</strong> {{ attendanceIn }}</div>
-          <div v-if="attendanceOut"  class="mt-2"><strong>Attendance Out:</strong> {{ attendanceOut }}</div>
-          <div v-if="attendanceIn && attendanceOut" class="mt-2"><strong>Duration Worked:</strong> {{ duration }}</div>
+          <!-- Always show attendance info if marked -->
+          <div v-if="inMarked">
+            <div class="mt-2"><strong>Attendance In:</strong> {{ attendanceIn }}</div>
+          </div>
+          <div v-if="outMarked">
+            <div class="mt-2"><strong>Attendance Out:</strong> {{ attendanceOut }}</div>
+          </div>
+          <div v-if="inMarked && outMarked">
+            <div class="mt-2"><strong>Duration Worked:</strong> {{ duration }}</div>
+          </div>
         </v-card>
       </v-col>
 
@@ -110,7 +119,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import GearLoader from '@/components/GearLoader.vue' // import your loader component
 
 // Today's date display
 const today = new Date().toLocaleDateString('en-US', {
@@ -126,28 +137,128 @@ const attendanceOut = ref('')
 const duration = ref('')
 let inTime = null
 
-function formatTime(date) {
-  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+// Add flags for button logic
+const inMarked = ref(false)
+const outMarked = ref(false)
+const loading = ref(false)
+
+// Fetch attendance status on page load
+async function fetchAttendanceStatus() {
+  const employeeId = localStorage.getItem('employee_id')
+  if (!employeeId) return
+
+  loading.value = true
+  const todayDate = new Date().toISOString().split('T')[0]
+  try {
+    const res = await axios.get(`http://localhost:9090/api/attendance/status`, {
+      params: {
+        employee_id: employeeId,
+        in_date: todayDate
+      }
+    })
+    const data = res.data
+    // Set flags based on API response
+    inMarked.value = !!data.inMarked
+    outMarked.value = !!data.outMarked
+
+    // Set attendance times if available (optional, for display)
+    if (inMarked.value && data.inTime) {
+      attendanceIn.value = new Date(`${todayDate}T${data.inTime}`).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      inTime = new Date(`${todayDate}T${data.inTime}`)
+    } else {
+      attendanceIn.value = ''
+      inTime = null
+    }
+    if (outMarked.value && data.outTime) {
+      attendanceOut.value = new Date(`${todayDate}T${data.outTime}`).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      if (inTime) {
+        const outTime = new Date(`${todayDate}T${data.outTime}`)
+        const diffMs = outTime - inTime
+        const diffMins = Math.floor(diffMs / 60000)
+        const hours = Math.floor(diffMins / 60)
+        const mins = diffMins % 60
+        duration.value = `${hours}h ${mins}m`
+      }
+    } else {
+      attendanceOut.value = ''
+      duration.value = ''
+    }
+  } catch (err) {
+    console.error('Failed to fetch attendance status', err)
+  } finally {
+    loading.value = false
+  }
 }
 
-function markIn() {
-  inTime = new Date()
-  attendanceIn.value = formatTime(inTime)
+onMounted(() => {
+  fetchAttendanceStatus()
+})
+
+const markIn = async () => {
+  loading.value = true
+  const employeeId = localStorage.getItem('employee_id')
+  if (!employeeId) {
+    alert('Employee ID not found in local storage')
+    return
+  }
+inTime = new Date()
+  //attendanceIn.value = formatTime(inTime)
   attendanceOut.value = ''
   duration.value = ''
+  const now = new Date()
+  const inDate = now.toISOString().split('T')[0]           // yyyy-MM-dd
+  const attendanceInTime = now.toTimeString().slice(0, 8)  // HH:mm:ss
+
+  const payload = {
+    employee: {
+      id: employeeId
+    },
+    active: true,
+    inDate: inDate,
+    attendanceIn: attendanceInTime,
+    attendanceOut: null,
+    durationWorked: 0,
+    shift: 'Morning',     // You can customize or get from localStorage
+    photoPath: ''         // If using camera capture, set image path/base64 here
+  }
+
+  try {
+    const res = await axios.post('http://localhost:9090/api/attendance/mark-in', payload)
+    console.log('Attendance IN Success:', res.data)
+    fetchAttendanceStatus() // Refresh status after marking in
+     loading.value = false
+  } catch (err) {
+    console.error('Attendance IN Failed:', err)
+  }
 }
 
-function markOut() {
-  if (!inTime) return
+const markOut = async (outTimeStr) => {
+  loading.value = true
   const outTime = new Date()
-  attendanceOut.value = formatTime(outTime)
+  const employeeId = localStorage.getItem('employee_id')
+  // Set attendanceOut immediately for UI feedback
+  attendanceOut.value = outTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
   const diffMs = outTime - inTime
   const diffMins = Math.floor(diffMs / 60000)
   const hours = Math.floor(diffMins / 60)
   const mins = diffMins % 60
   duration.value = `${hours}h ${mins}m`
-}
+  const attendanceoutTime = outTime.toTimeString().slice(0, 8)
+  try {
+    const payload = {
+      durationWorked: diffMins,  // Total minutes worked
+      outTime: attendanceoutTime  // e.g., '18:15:00'
+    }
 
+    await axios.put(`http://localhost:9090/api/attendance/out/${employeeId}`, payload)
+    fetchAttendanceStatus() // Refresh status after marking out
+    loading.value = false
+    outMarked.value = true // Update flag so UI shows "Attendance Out"
+  } catch (error) {
+    console.error('Failed to mark OUT', error)
+    alert('Error occurred')
+  }
+}
 // Table Data
 const tableHeaders = [
   { title: 'Component', key: 'component' },
@@ -211,3 +322,4 @@ function submitAttendance() {
   border: 2px solid #ccc;
 }
 </style>
+}
