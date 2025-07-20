@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/regions")
@@ -15,6 +16,11 @@ public class RegionMstrController {
     @Autowired
     private RegionMstrRepository regionRepo;
 
+
+    @GetMapping("/dropdown")
+    public List<Map<String, Object>> getRegionsForDropdown() {
+        return regionRepo.findIdAndNameForActive();
+    }
     @GetMapping
     public List<RegionMstr> getAllRegions() {
         return regionRepo.findAll();

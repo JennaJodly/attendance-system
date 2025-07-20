@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
+import java.util.Map;
 
 public interface EmployeeGradeRepository extends JpaRepository<EmployeeGrade, Long> {
     
@@ -21,4 +22,8 @@ public interface EmployeeGradeRepository extends JpaRepository<EmployeeGrade, Lo
     
     @Query("SELECT eg FROM EmployeeGrade eg WHERE :salary BETWEEN eg.minSalary AND eg.maxSalary")
     List<EmployeeGrade> findBySalaryRange(@Param("salary") BigDecimal salary);
+
+    // Fixed: Changed EmployeeGradeMstr to EmployeeGrade
+    @Query("SELECT new map(eg.id as id, eg.name as name) FROM EmployeeGrade eg WHERE eg.active = true")
+    List<Map<String, Object>> findIdAndNameForActive();
 }

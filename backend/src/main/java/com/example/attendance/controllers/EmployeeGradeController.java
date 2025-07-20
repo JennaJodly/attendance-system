@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employee-grades")
@@ -15,6 +16,11 @@ public class EmployeeGradeController {
 
     @Autowired
     private EmployeeGradeRepository employeeGradeRepo;
+
+    @GetMapping("/dropdown")
+    public List<Map<String, Object>> getEmployeeGradesForDropdown() {
+        return employeeGradeRepo.findIdAndNameForActive();
+    }
 
     @GetMapping
     public List<EmployeeGrade> getAllEmployeeGrades() {

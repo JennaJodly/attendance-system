@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 public interface BranchMstrRepository extends JpaRepository<BranchMstr, Long> {
     
@@ -17,4 +18,8 @@ public interface BranchMstrRepository extends JpaRepository<BranchMstr, Long> {
     
     @Query("SELECT b FROM BranchMstr b WHERE TRIM(LOWER(b.name)) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<BranchMstr> findByNameContaining(@Param("name") String name);
+
+    @Query("SELECT new map(b.id as id, b.name as name) FROM BranchMstr b WHERE b.active = true")
+    List<Map<String, Object>> findIdAndNameForActive();
+
 }

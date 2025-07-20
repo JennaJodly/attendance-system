@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 public interface DepartmentMstrRepository extends JpaRepository<DepartmentMstr, Long> {
     
@@ -14,5 +15,9 @@ public interface DepartmentMstrRepository extends JpaRepository<DepartmentMstr, 
     
     @Query("SELECT d FROM DepartmentMstr d WHERE d.active = true")
     List<DepartmentMstr> findAllActive();
+
+     @Query("SELECT d.id as id, d.name as name FROM DepartmentMstr d WHERE d.active = true")
+    List<Map<String, Object>> findIdAndNameForActive();
+    
     
 }

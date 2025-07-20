@@ -38,8 +38,25 @@ public class DesignationMstr {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+        
+    @Column(name = "created_by")
+    private Integer createdBy;
+
+    @Column(name = "updated_by")
+    private Integer updatedBy;
     // Many Designations belong to one Department
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "department_id")
-    // private DepartmentMstr department;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private DepartmentMstr department;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -15,6 +16,11 @@ public class CategoryMstrController {
     @Autowired
     private CategoryMstrRepository categoryRepo;
 
+
+    @GetMapping("/dropdown")
+    public List<Map<String, Object>> getCategoriesForDropdown() {
+        return categoryRepo.findIdAndNameForActive();
+    }
     @GetMapping
     public List<CategoryMstr> getAllCategories() {
         return categoryRepo.findAll();

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/designations")
@@ -15,6 +16,11 @@ public class DesignationMstrController {
     @Autowired
     private DesignationMstrRepository designationRepo;
 
+   @GetMapping("/dropdown")
+    public List<Map<String, Object>> getDesignationsForDropdown() {
+        return designationRepo.findIdAndNameForActive();
+    }
+    
     @GetMapping
     public List<DesignationMstr> getAllDesignations() {
         return designationRepo.findAll();
