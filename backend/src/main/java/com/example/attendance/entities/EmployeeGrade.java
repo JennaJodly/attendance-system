@@ -36,6 +36,7 @@ public class EmployeeGrade {
     private Integer level;
 
     @Column(name = "active", nullable = false)
+    @Builder.Default
     private Boolean active = true;
 
     @Column(name = "created_at")
@@ -43,4 +44,24 @@ public class EmployeeGrade {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "created_by")
+    private Integer createdBy;
+
+    @Column(name = "updated_by")
+    private Integer updatedBy;
+
+    // Fixed: Removed incomplete/duplicate relationship
+    // If you need another relationship, complete it properly
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

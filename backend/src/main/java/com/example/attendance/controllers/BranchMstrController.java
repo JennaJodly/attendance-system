@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/branches")
@@ -14,6 +15,11 @@ public class BranchMstrController {
 
     @Autowired
     private BranchMstrRepository branchRepo;
+
+    @GetMapping("/dropdown")
+    public List<Map<String, Object>> getBranchesForDropdown() {
+        return branchRepo.findIdAndNameForActive();
+    }
 
     @GetMapping
     public List<BranchMstr> getAllBranches() {

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 public interface DivisionMstrRepository extends JpaRepository<DivisionMstr, Long> {
     
@@ -14,5 +15,8 @@ public interface DivisionMstrRepository extends JpaRepository<DivisionMstr, Long
     
     @Query("SELECT div FROM DivisionMstr div WHERE div.active = true")
     List<DivisionMstr> findAllActive();
-       
+   
+    
+    @Query("SELECT new map(d.id as id, d.name as name) FROM DivisionMstr d WHERE d.active = true")
+    List<Map<String, Object>> findIdAndNameForActive();
 }

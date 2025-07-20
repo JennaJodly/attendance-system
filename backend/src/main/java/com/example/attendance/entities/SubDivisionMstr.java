@@ -38,4 +38,21 @@ public class SubDivisionMstr {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "division_id", nullable = false)
     private DivisionMstr division;
+        
+    @Column(name = "created_by")
+    private Integer createdBy;
+
+    @Column(name = "updated_by")
+    private Integer updatedBy;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

@@ -23,15 +23,6 @@ public class BranchMstr {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "phone")
-    private String phone;
-
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "active", nullable = false)
     private Boolean active = true;
 
@@ -40,6 +31,24 @@ public class BranchMstr {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+        
+    @Column(name = "created_by")
+    private Integer createdBy;
+
+    @Column(name = "updated_by")
+    private Integer updatedBy;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
 
     // One Branch can have many Departments
     // @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -35,6 +35,13 @@ public class DivisionMstr {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+        
+    @Column(name = "created_by")
+    private Integer createdBy;
+
+    @Column(name = "updated_by")
+    private Integer updatedBy;
+
     // Many Divisions belong to one Region
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "region_id")
@@ -43,4 +50,15 @@ public class DivisionMstr {
     // One Division can have many SubDivisions
     @OneToMany(mappedBy = "division", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SubDivisionMstr> subDivisions;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 public interface DesignationMstrRepository extends JpaRepository<DesignationMstr, Long> {
     
@@ -17,4 +18,8 @@ public interface DesignationMstrRepository extends JpaRepository<DesignationMstr
     
     @Query("SELECT des FROM DesignationMstr des WHERE des.level = :level")
     List<DesignationMstr> findByLevel(@Param("level") Integer level);
+
+    @Query("SELECT new map(d.id as id, d.name as name) FROM DesignationMstr d WHERE d.active = true")
+    List<Map<String, Object>> findIdAndNameForActive();
+
 }

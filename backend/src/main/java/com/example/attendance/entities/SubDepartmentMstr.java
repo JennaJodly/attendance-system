@@ -38,4 +38,22 @@ public class SubDepartmentMstr {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
     private DepartmentMstr department;
+
+        
+    @Column(name = "created_by")
+    private Integer createdBy;
+
+    @Column(name = "updated_by")
+    private Integer updatedBy;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
