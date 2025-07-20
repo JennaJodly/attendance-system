@@ -1,33 +1,39 @@
 package com.example.attendance.entities;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
+@Table(name = "attendance")
 public class Attendance {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    private LocalDateTime timestamp;
+    private Boolean active;
 
-    private String type; // "IN" or "OUT"
+    private LocalDate inDate;
+
+    private LocalTime attendanceIn;
+
+    private LocalTime attendanceOut;
+
+    private Integer durationWorked; // in minutes
+
+    private String shift;
 
     private String photoPath;
 
-    // ✅ Add Getters and Setters
+    // === Getters and Setters ===
 
-    public UUID getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public Employee getEmployee() {
@@ -38,20 +44,52 @@ public class Attendance {
         this.employee = employee;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
-    public String getType() {
-        return type;
+    public LocalDate getInDate() {
+        return inDate;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setInDate(LocalDate inDate) {
+        this.inDate = inDate;
+    }
+
+    public LocalTime getAttendanceIn() {
+        return attendanceIn;
+    }
+
+    public void setAttendanceIn(LocalTime attendanceIn) {
+        this.attendanceIn = attendanceIn;
+    }
+
+    public LocalTime getAttendanceOut() {
+        return attendanceOut;
+    }
+
+    public void setAttendanceOut(LocalTime attendanceOut) {
+        this.attendanceOut = attendanceOut;
+    }
+
+    public Integer getDurationWorked() {
+        return durationWorked;
+    }
+
+    public void setDurationWorked(Integer durationWorked) {
+        this.durationWorked = durationWorked;
+    }
+
+    public String getShift() {
+        return shift;
+    }
+
+    public void setShift(String shift) {
+        this.shift = shift;
     }
 
     public String getPhotoPath() {
@@ -61,4 +99,16 @@ public class Attendance {
     public void setPhotoPath(String photoPath) {
         this.photoPath = photoPath;
     }
+
+    // public Object getOutTime() {
+    //     // TODO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'getOutTime'");
+    // }
+
+    // public Object getStatus() {
+    //     // TODO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
+    // }
+
+    // Remove unused/unimplemented methods like getOutTime(), getStatus()
 }
