@@ -151,140 +151,9 @@
         </v-tab>
       </v-tabs>
       <v-window v-model="tab">
-        <v-window-item>
+        <v-window-item v-for="(item, i) in tabItems" :key="i">
           <div class="pa-4">
             <!-- Other Details Tab -->
-            <!-- <template v-if="tab === 0">
-              <v-form>
-                <v-row dense>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete
-                        label="Branch *"
-                        :items="[]"
-                        v-model="otherDetails.branch"
-                      />
-                      <v-btn icon color="primary" class="ml-2" @click="addBranch" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete
-                        label="Department *"
-                        :items="[]"
-                        v-model="otherDetails.department"
-                      />
-                      <v-btn icon color="primary" class="ml-2" @click="addDepartment" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete
-                        label="Sub Department"
-                        :items="[]"
-                        v-model="otherDetails.subDepartment"
-                      />
-                      <v-btn icon color="primary" class="ml-2" @click="addSubDepartment" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete label="Designation *" :items="[]" v-model="otherDetails.designation" />
-                      <v-btn icon color="primary" class="ml-2" @click="addDesignation" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete label="Region" :items="[]" v-model="otherDetails.region" />
-                      <v-btn icon color="primary" class="ml-2" @click="addRegion" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete label="Channel/Division" :items="[]" v-model="otherDetails.channelDivision" />
-                      <v-btn icon color="primary" class="ml-2" @click="addDivision" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete label="Sub Channel/Sub Division" :items="[]" v-model="otherDetails.subChannel" />
-                      <v-btn icon color="primary" class="ml-2" @click="addSubDivision" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete label="Category/Product" :items="[]" v-model="otherDetails.categoryProduct" />
-                      <v-btn icon color="primary" class="ml-2" @click="addCategoryProduct" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <div class="d-flex align-center">
-                      <v-autocomplete label="Employee Grade" :items="[]" v-model="otherDetails.employeeGrade" />
-                      <v-btn icon color="primary" class="ml-2" @click="addEmployeeGrade" density="compact" style="height:28px;width:28px;min-width:28px;">
-                        <v-icon size="18">mdi-plus</v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <v-autocomplete
-                      label="Reporting To *"
-                      :items="[]"
-                      v-model="otherDetails.reportingTo"
-                      required
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <v-select
-                      label="No of Appraisers *"
-                      :items="[1, 2]"
-                      v-model="otherDetails.noOfAppraisers"
-                      required
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3" v-if="otherDetails.noOfAppraisers >= 1">
-                    <v-autocomplete
-                      label="Appraiser 1"
-                      :items="[]"
-                      v-model="otherDetails.appraiser1"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3" v-if="otherDetails.noOfAppraisers == 2">
-                    <v-autocomplete
-                      label="Appraiser 2"
-                      :items="[]"
-                      v-model="otherDetails.appraiser2"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <v-autocomplete label="Reviewer" :items="[]" v-model="otherDetails.reviewer" />
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <v-text-field label="Effective From" v-model="otherDetails.effectiveFrom" type="date" />
-                  </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="12" style="text-align: right;">
-                        <v-btn color="primary" size="small" class="mt-4" @click="goToNextTab">Next</v-btn>
-                    </v-col>
-                </v-row>
-              </v-form>
-            </template> -->
             <template v-if="tab === 0">
               <v-form>
                 <v-row dense>
@@ -517,18 +386,39 @@
                       required
                     />
                   </v-col>
-                  <!-- ... other fields ... -->
+                  <v-col cols="12" sm="6" md="3">
+                    <v-select
+                      label="No of Appraisers *"
+                      :items="[1, 2]"
+                      v-model="otherDetails.noOfAppraisers"
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3" v-if="otherDetails.noOfAppraisers >= 1">
+                    <v-autocomplete
+                      label="Appraiser 1"
+                      :items="[]"
+                      v-model="otherDetails.appraiser1"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3" v-if="otherDetails.noOfAppraisers == 2">
+                    <v-autocomplete
+                      label="Appraiser 2"
+                      :items="[]"
+                      v-model="otherDetails.appraiser2"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3">
+                    <v-autocomplete label="Reviewer" :items="[]" v-model="otherDetails.reviewer" />
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3">
+                    <v-text-field label="Effective From" v-model="otherDetails.effectiveFrom" type="date" />
+                  </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12" style="text-align: right">
-                    <v-btn
-                      color="primary"
-                      size="small"
-                      class="mt-4"
-                      @click="goToNextTab"
-                      >Next</v-btn
-                    >
-                  </v-col>
+                    <v-col cols="12" style="text-align: right;">
+                        <v-btn color="primary" size="small" class="mt-4" @click="goToNextTab">Next</v-btn>
+                    </v-col>
                 </v-row>
               </v-form>
             </template>
@@ -601,8 +491,6 @@
                     </v-btn>
                   </v-col>
                 </v-row>
-                <!-- <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                <v-btn color="primary" class="mt-4 ml-2" @click="goToNextTab">Next</v-btn> -->
                 <v-row style="justify-content: space-between">
                   <v-col>
                     <v-btn
@@ -675,8 +563,6 @@
                     </v-btn>
                   </v-col>
                 </v-row>
-                <!-- <v-btn color="primary" class="mt-4" @click="goToPrevTab">Previous</v-btn>
-                <v-btn type="submit" color="success" class="mt-4 ml-2">Submit</v-btn> -->
                 <v-row style="justify-content: space-between">
                   <v-col>
                     <v-btn
@@ -1096,17 +982,6 @@ const handlePhotoUpload = (e) => {
   };
   if (file) reader.readAsDataURL(file);
 };
-
-
-
-
-
-
-
-
-
-
-
 
 
 const submitForm = async () => {
@@ -1603,10 +1478,6 @@ const loadSubDivisionsByDivision = async (divisionId) => {
   }
 }
 
-
-
-
-
 const handleDepartmentChange = (department) => {
   otherDetails.value.subDepartment = '' // Clear subdepartment selection
   if (department && department.id) {
@@ -1621,8 +1492,6 @@ const handleDivisionChange = (division) => {
     loadSubDivisionsByDivision(division.id)
   }
 }
-
-
 
 onMounted(async () => {
   try {
