@@ -35,7 +35,7 @@
           <h3 class="text-h6 font-weight-bold mb-4">Leave Requests</h3>
           <v-row dense>
             <v-col cols="12" sm="6">
-              <v-select label="Leave Type" :items="['Sick', 'Casual', 'Earned']" />
+              <v-select label="Leave Type" v-model="leavetype" :items="['Sick', 'Casual']" />
             </v-col>
 
             <v-col cols="6" sm="3">
@@ -50,33 +50,41 @@
                 </template>
                 <v-date-picker
                   v-model="fromDate"
+                   :min="today"
                   @update:model-value="onFromDateChange"
                 />
               </v-menu>
             </v-col>
 
             <v-col cols="6" sm="3">
-              <v-menu v-model="toMenu" :close-on-content-click="false" transition="scale-transition" offset-y>
-                <template #activator="{ props }">
-                  <v-text-field
-                    v-model="toDateFormatted"
-                    label="To Date"
-                    readonly
-                    v-bind="props"
+                <v-menu
+                  v-model="toMenu"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                >
+                  <template #activator="{ props }">
+                    <v-text-field
+                      v-model="toDateFormatted"
+                      label="To Date"
+                      readonly
+                      v-bind="props"
+                      :disabled="!fromDate" 
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="toDate"
+                    @update:model-value="onToDateChange"
+                    :min="fromDate" 
+                    :disabled="!fromDate"
                   />
-                </template>
-                <v-date-picker
-                  v-model="toDate"
-                  @update:model-value="onToDateChange"
-                />
-              </v-menu>
-            </v-col>
-
+                </v-menu>
+              </v-col>
             <v-col cols="12">
-              <v-textarea label="Leave Reason" rows="2" />
+              <v-textarea v-model="leaveReason" label="Leave Reason" rows="2" />
             </v-col>
             <v-col cols="12" class="text-end">
-              <v-btn color="primary" size="small" class="mt-4" @click="submitAttendance">Save</v-btn>
+              <v-btn color="primary" size="small" class="mt-4" @click="submitLeave">Save</v-btn>
             </v-col>
           </v-row>
         </v-card>
@@ -122,6 +130,12 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import GearLoader from '@/components/GearLoader.vue' // import your loader component
+import moment from 'moment'
+import useToast from '@/composables/useToast'
+import useGlobalUtils from '@/composables/useGlobalUtils';
+
+const $globalUtils = useGlobalUtils(); // like global Functions use globalUtils.anyfuction()
+const toast = useToast()
 
 // Today's date display
 const today = new Date().toLocaleDateString('en-US', {
@@ -136,11 +150,16 @@ const attendanceIn = ref('')
 const attendanceOut = ref('')
 const duration = ref('')
 let inTime = null
+// const today = new Date().toISOString().split('T')[0]; // format: 'YYYY-MM-DD'
+
 
 // Add flags for button logic
 const inMarked = ref(false)
 const outMarked = ref(false)
 const loading = ref(false)
+const leaveReason = ref('')
+const  leavetype = ref('')
+
 
 // Fetch attendance status on page load
 async function fetchAttendanceStatus() {
@@ -259,6 +278,38 @@ const markOut = async (outTimeStr) => {
     alert('Error occurred')
   }
 }
+const submitLeave = async () => {
+  console.log("jen")
+  loading.value = true
+  const employeeId = localStorage.getItem('employee_id')
+  if (!employeeId) {
+    alert('Employee ID not found in local storage')
+    return
+  } 
+  const payload = {
+    employee: {
+      id: employeeId
+    },
+    active: true,
+    fromDate: moment(fromDateFormatted.value, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+    toDate: moment(toDateFormatted.value, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+    leaveReason: leaveReason.value,
+    leaveType: leavetype.value
+  }
+
+  try {
+    const res = await axios.post('http://localhost:9090/api/leave_request/ask_leave', payload)
+    console.log('Attendance IN Success:', res.data)
+    toast('success', 'Request Sent successfully!');
+     fromDateFormatted.value = null
+    toDateFormatted.value = null
+    leaveReason.value = ''
+    leavetype.value = null
+     loading.value = false
+  } catch (err) {
+    console.error('Attendance IN Failed:', err)
+  }
+}
 // Table Data
 const tableHeaders = [
   { title: 'Component', key: 'component' },
@@ -322,4 +373,4 @@ function submitAttendance() {
   border: 2px solid #ccc;
 }
 </style>
-}
+

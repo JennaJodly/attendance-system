@@ -1391,7 +1391,7 @@ const saveSubDivision = async () => {
     Object.assign(newSubDivision, { name: '', code: '', description: '', division: null });
   } catch (err) {
     console.error("Error adding sub division", err);
-    toast('error', 'Failed to add sub division');
+    toast('error', 'Failed to add sub division');git 
   }
 };
 
