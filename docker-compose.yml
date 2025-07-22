@@ -1,35 +1,47 @@
+version: '3.8'
+
 services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: attendance-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-postgres}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - attendance-network
+    restart: unless-stopped
+
+  # Spring Boot Application
   backend:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: attendance-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-postgres}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
+      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL:-true}
+      SERVER_PORT: 9090
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
     ports:
-      - "8080:8080"
+      - "9090:9090"
     depends_on:
       - postgres
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+    networks:
+      - attendance-network
+    restart: unless-stopped
 
-  frontend:
-    image: node:22
-    working_dir: /app
-    volumes:
-      - ./frontend:/app
-    command: sh -c "npm install && npm run serve"
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
+volumes:
+  postgres_data:
 
-  postgres:
-    image: postgres:15
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
+networks:
+  attendance-network:
+    driver: bridge
