@@ -123,7 +123,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import GearLoader from '@/components/GearLoader.vue' // import your loader component
 
-import apiClient from '@/utils/api';
+import apiClient from '@/utils/api.js';
 
 // const res = await apiClient.get('/api/divisions/dropdown');
 // Today's date display

@@ -26,7 +26,7 @@
 
 <script>
 import axios from 'axios';
-import apiClient from '@/utils/api';
+import apiClient from '@/utils/api.js';
 
 // const res = await apiClient.get('/api/divisions/dropdown');
 

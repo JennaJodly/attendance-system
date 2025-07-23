@@ -905,7 +905,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import useToast from '@/composables/useToast'
 import useGlobalUtils from '@/composables/useGlobalUtils';
-import apiClient from '@/utils/api';
+import apiClient from '@/utils/api.js';
 
 // const res = await apiClient.get('/api/divisions/dropdown');
 
