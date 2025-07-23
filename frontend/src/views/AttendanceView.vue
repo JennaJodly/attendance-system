@@ -137,6 +137,9 @@ import useGlobalUtils from '@/composables/useGlobalUtils';
 const $globalUtils = useGlobalUtils(); // like global Functions use globalUtils.anyfuction()
 const toast = useToast()
 
+import apiClient from '@/utils/api.js';
+
+// const res = await apiClient.get('/api/divisions/dropdown');
 // Today's date display
 const today = new Date().toLocaleDateString('en-US', {
   year: 'numeric',
@@ -169,7 +172,7 @@ async function fetchAttendanceStatus() {
   loading.value = true
   const todayDate = new Date().toISOString().split('T')[0]
   try {
-    const res = await axios.get(`http://localhost:9090/api/attendance/status`, {
+    const res = await apiClient.get(`/api/attendance/status`, {
       params: {
         employee_id: employeeId,
         in_date: todayDate
@@ -242,7 +245,7 @@ inTime = new Date()
   }
 
   try {
-    const res = await axios.post('http://localhost:9090/api/attendance/mark-in', payload)
+    const res = await apiClient.post('/api/attendance/mark-in', payload)
     console.log('Attendance IN Success:', res.data)
     fetchAttendanceStatus() // Refresh status after marking in
      loading.value = false
@@ -269,7 +272,7 @@ const markOut = async (outTimeStr) => {
       outTime: attendanceoutTime  // e.g., '18:15:00'
     }
 
-    await axios.put(`http://localhost:9090/api/attendance/out/${employeeId}`, payload)
+    await apiClient.put(`/api/attendance/out/${employeeId}`, payload)
     fetchAttendanceStatus() // Refresh status after marking out
     loading.value = false
     outMarked.value = true // Update flag so UI shows "Attendance Out"
