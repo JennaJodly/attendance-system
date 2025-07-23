@@ -1,5 +1,5 @@
 # Render-specific Dockerfile (optimized for production)
-FROM maven:3.9.6-openjdk-17-slim AS build
+FROM maven:3.9-openjdk-17-slim AS build
 
 # Set working directory
 WORKDIR /app
@@ -35,7 +35,7 @@ EXPOSE 9090
 
 # Health check (update port to 9090)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f /actuator/health || exit 1
+  CMD curl -f http://localhost:$PORT/actuator/health || exit 1
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dserver.port=${PORT:-9090}", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
