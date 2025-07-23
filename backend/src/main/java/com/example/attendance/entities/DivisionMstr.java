@@ -61,4 +61,22 @@ public class DivisionMstr {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setCode(String code) { this.code = code; }
+
+    public void setName(String name) { this.name = name; }
+
+    public void setDescription(String description) { this.description = description; }
+
+    public void setActive(Boolean active) { this.active = active; }
+
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public void setCreatedBy(Integer createdBy) { this.createdBy = createdBy; }
+
+    public void setUpdatedBy(Integer updatedBy) { this.updatedBy = updatedBy; }
 }

@@ -64,4 +64,6 @@ public class DepartmentMstr {
     // // One Department can have many Designations
     // @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     // private List<DesignationMstr> designations;
+
+    public void setId(Long id) { this.id = id; }
 }

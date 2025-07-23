@@ -15,6 +15,8 @@ public class DepartmentMstrController {
 
     @Autowired
     private DepartmentMstrRepository departmentRepo;
+    private Long id;
+    private String name;
 
     @GetMapping("/dropdown")
     public List<Map<String, Object>> getDepartmentsForDropdown() {
@@ -58,5 +60,13 @@ public class DepartmentMstrController {
         }
         departmentRepo.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+     public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

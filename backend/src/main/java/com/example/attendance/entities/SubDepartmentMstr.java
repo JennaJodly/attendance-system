@@ -56,4 +56,10 @@ public class SubDepartmentMstr {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void setId(Long id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setCode(String code) { this.code = code; }
+    public void setDescription(String description) { this.description = description; }
+    public void setDepartment(DepartmentMstr department) { this.department = department; }
 }

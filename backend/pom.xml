@@ -35,6 +35,13 @@
             <version>42.6.0</version>
         </dependency>
 
+        <dependency>
+    <groupId>com.secugen</groupId>
+    <artifactId>fdxsdkpro</artifactId>
+    <version>1.12</version>
+</dependency>
+
+
         <!-- Lombok (optional) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
