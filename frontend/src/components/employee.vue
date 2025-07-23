@@ -120,7 +120,7 @@
           <v-col cols="12" sm="6" md="3">
             <v-text-field
               label="Emergency Contact No"
-              v-model="form.emergency_contact_no"
+              v-model="form.emergencyContactNo"
             />
           </v-col>
 
@@ -135,6 +135,21 @@
               label="Upload Photo"
               @change="handlePhotoUpload"
             />
+          </v-col>
+          <!-- Fingerprint Scan -->
+          <v-col cols="12" sm="6" md="3" class="d-flex flex-column align-center justify-center">
+            <v-icon size="40" color="primary">fingerprint</v-icon>
+            <v-btn
+              color="primary"
+              class="mt-2"
+              @click="scanFingerprint"
+              :loading="scanning"
+            >
+              Scan Fingerprint
+            </v-btn>
+            <v-chip v-if="form.fingerprint" class="mt-2" color="success" label>
+              Fingerprint Captured
+            </v-chip>
           </v-col>
         </v-row>
 
@@ -914,6 +929,7 @@ const router = useRouter();
 const countries = ref([]);
 const states = ref([]);
 const cities = ref([]);
+const scanning = ref(false)
 // const loading = ref(false)
 onMounted(async () => {
   try {
@@ -1132,6 +1148,28 @@ const fetchDepartmentList = async () => {
     departmentList.value = [];
   }
 };
+
+const scanFingerprint = async () => {
+  try {
+    scanning.value = true
+    const res = await axios.post('http://localhost:9090/api/fingerprint/capture', null, {
+  params: {
+    timeout: 10000,
+    quality: 50,
+    licstr: '',
+    templateFormat: 'ISO',
+    imageWSQRate: 0.75
+  }
+})
+    form.fingerprint = res.data.fingerprint  // expect something like base64 string
+  } catch (err) {
+    alert('Failed to capture fingerprint')
+    console.error(err)
+  } finally {
+    scanning.value = false
+  }
+}
+
 
 const fetchDivisionList = async () => {
   try {
