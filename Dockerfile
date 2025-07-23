@@ -1,58 +1,33 @@
-# # Use OpenJDK 17 as base image
-# FROM openjdk:17-jdk-slim
+# Multi-stage build for production
+FROM maven:3.9.6-openjdk-17-slim AS build
 
-# # Set working directory
-# WORKDIR /app
-
-# # Copy Maven files first for better layer caching
-# COPY backend/pom.xml .
-# COPY backend/mvnw .
-# COPY backend/mvnw.cmd .
-# COPY backend/.mvn .mvn
-
-# # Make mvnw executable
-# RUN chmod +x ./mvnw
-
-# # Download dependencies (this layer will be cached if pom.xml doesn't change)
-# RUN ./mvnw dependency:resolve
-
-# # Copy source code
-# COPY backend/src src
-
-# # Build the application
-# RUN ./mvnw clean package -DskipTests
-
-# # Expose port 8080
-# EXPOSE 8080
-
-# # Run the application
-# CMD ["java", "-jar", "target/attendance-1.0.jar"]
-
-# Use OpenJDK 17
-FROM openjdk:17-jdk-slim
-
-# Install Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    rm -rf /var/lib/apt/lists/*
-
-# Set working directory
 WORKDIR /app
 
-# Copy only what is needed
+# Copy pom.xml first for better caching
 COPY backend/pom.xml .
-COPY backend/src ./src
+RUN mvn dependency:go-offline -B
 
-# Copy mvn wrapper if used (optional)
-# COPY backend/mvnw . 
-# COPY backend/.mvn .mvn
-# RUN chmod +x mvnw
+# Copy source and build
+COPY backend/src src
+RUN mvn clean package -DskipTests
 
-# Download dependencies
-RUN mvn dependency:resolve
+# Production stage
+FROM openjdk:17-jdk-slim
 
-# Expose port (Spring Boot default)
-EXPOSE 8080
+# Install curl for health checks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Run the app using Spring Boot plugin
-CMD ["mvn", "spring-boot:run"]
+WORKDIR /app
+
+# Copy jar from build stage
+COPY --from=build /app/target/attendance-1.0.jar app.jar
+
+# Expose port
+EXPOSE 10000
+
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:$PORT/actuator/health || exit 1
+
+# Run the application with dynamic port
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT:-10000} -Dspring.profiles.active=prod -jar app.jar"]

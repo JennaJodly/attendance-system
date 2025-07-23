@@ -905,6 +905,9 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import useToast from '@/composables/useToast'
 import useGlobalUtils from '@/composables/useGlobalUtils';
+import apiClient from '@/utils/api';
+
+// const res = await apiClient.get('/api/divisions/dropdown');
 
 
 
@@ -917,7 +920,7 @@ const cities = ref([]);
 // const loading = ref(false)
 onMounted(async () => {
   try {
-    const res = await axios.get("http://localhost:9090/api/countries");
+    const res = await apiClient.get("/api/countries");
     countries.value = res.data;
   } catch (err) {
     console.error("Failed to load countries:", err);
@@ -997,8 +1000,8 @@ const submitForm = async () => {
   console.log("Submitting payload:", payload);
 
   try {
-    const res = await axios.post(
-      "http://localhost:9090/api/employee/add",
+    const res = await apiClient.post(
+      "/api/employee/add",
       payload
     );
     console.log("Response:", res);
@@ -1013,8 +1016,8 @@ const loadStates = async () => {
   // console.log('Loading states for country:', country)
   console.log("Loading", form._rawValue.country.code);
   if (form._rawValue.country) {
-    const res = await axios.get(
-      `http://localhost:9090/api/states/by-country-code/${form._rawValue.country.code}`
+    const res = await apiClient.get(
+      `/api/states/by-country-code/${form._rawValue.country.code}`
     );
     states.value = res.data;
   }
@@ -1025,8 +1028,8 @@ const loadCities = async () => {
 
   if (stateCode && countryCode) {
     try {
-      const res = await axios.get(
-        "http://localhost:9090/api/cities/by-country-and-state",
+      const res = await apiClient.get(
+        "/api/cities/by-country-and-state",
         {
           params: {
             stateCode,
@@ -1126,7 +1129,7 @@ const divisionList = ref([]);
 // Fetch department and division lists for dialogs
 const fetchDepartmentList = async () => {
   try {
-    const res = await axios.get('http://localhost:9090/api/departments/dropdown');
+    const res = await apiClient.get('/api/departments/dropdown');
     departmentList.value = res.data;
   } catch (err) {
     departmentList.value = [];
@@ -1135,7 +1138,7 @@ const fetchDepartmentList = async () => {
 
 const fetchDivisionList = async () => {
   try {
-    const res = await axios.get('http://localhost:9090/api/divisions/dropdown');
+    const res = await apiClient.get('/api/divisions/dropdown');
     divisionList.value = res.data;
   } catch (err) {
     divisionList.value = [];
@@ -1181,11 +1184,11 @@ const saveDepartment = async () => {
     return;
   }
   try {
-    const resSave = await axios.post('http://localhost:9090/api/departments', newDepartment);
+    const resSave = await apiClient.post('/api/departments', newDepartment);
     toast('success', 'Department added successfully');
     showDepartmentDialog.value = false;
     // Reload departments and set new value
-    const res = await axios.get('http://localhost:9090/api/departments/dropdown');
+    const res = await apiClient.get('/api/departments/dropdown');
     departments.value = res.data;
     // Set the new department as selected (find by id)
     const newItem = res.data.find(item => item.id === resSave.data.id);
@@ -1202,11 +1205,11 @@ const saveBranch = async () => {
     return;
   }
   try {
-    const resSave = await axios.post('http://localhost:9090/api/branches', newBranch);
+    const resSave = await apiClient.post('/api/branches', newBranch);
     toast('success', 'Branch added successfully');
     showBranchDialog.value = false;
     // Reload branches and set new value
-    const res = await axios.get('http://localhost:9090/api/branches/dropdown');
+    const res = await apiClient.get('/api/branches/dropdown');
     branches.value = res.data;
     // Set the new branch as selected (find by id)
     const newItem = res.data.find(item => item.id === resSave.data.id);
@@ -1224,11 +1227,11 @@ const saveCategory = async () => {
     return;
   }
   try {
-    const resSave = await axios.post("http://localhost:9090/api/categories", newCategory);
+    const resSave = await apiClient.post("/api/categories", newCategory);
     toast('success', 'Category added successfully');
     showCategoryDialog.value = false;
     // Reload categories and set new value
-    const res = await axios.get('http://localhost:9090/api/categories/dropdown');
+    const res = await apiClient.get('/api/categories/dropdown');
     categories.value = res.data;
     const newItem = res.data.find(item => item.id === resSave.data.id);
     otherDetails.value.categoryProduct = newItem || '';
@@ -1244,11 +1247,11 @@ const saveRegion = async () => {
     return;
   }
   try {
-    const resSave = await axios.post("http://localhost:9090/api/regions", newRegion);
+    const resSave = await apiClient.post("/api/regions", newRegion);
     toast('success', 'Region added successfully');
     showRegionDialog.value = false;
     // Reload regions and set new value
-    const res = await axios.get('http://localhost:9090/api/regions/dropdown');
+    const res = await apiClient.get('/api/regions/dropdown');
     regions.value = res.data;
     const newItem = res.data.find(item => item.id === resSave.data.id);
     otherDetails.value.region = newItem || '';
@@ -1265,11 +1268,11 @@ const saveDesignation = async () => {
     return;
   }
   try {
-    const resSave = await axios.post("http://localhost:9090/api/designations", newDesignation);
+    const resSave = await apiClient.post("/api/designations", newDesignation);
     toast('success', 'Designation added successfully');
     showDesignationDialog.value = false;
     // Reload designations and set new value
-    const res = await axios.get('http://localhost:9090/api/designations/dropdown');
+    const res = await apiClient.get('/api/designations/dropdown');
     designations.value = res.data;
     const newItem = res.data.find(item => item.id === resSave.data.id);
     otherDetails.value.designation = newItem || '';
@@ -1286,11 +1289,11 @@ const saveDivision = async () => {
     return;
   }
   try {
-    const resSave = await axios.post("http://localhost:9090/api/divisions", newDivision);
+    const resSave = await apiClient.post("/api/divisions", newDivision);
     toast('success', 'Division added successfully');
     showDivisionDialog.value = false;
     // Reload divisions and set new value
-    const res = await axios.get('http://localhost:9090/api/divisions/dropdown');
+    const res = await apiClient.get('/api/divisions/dropdown');
     divisions.value = res.data;
     const newItem = res.data.find(item => item.id === resSave.data.id);
     otherDetails.value.channelDivision = newItem || '';
@@ -1307,14 +1310,14 @@ const saveEmployeeGrade = async () => {
     return;
   }
   try {
-    const resSave = await axios.post(
-      "http://localhost:9090/api/employee-grades",
+    const resSave = await apiClient.post(
+      "/api/employee-grades",
       newEmployeeGrade
     );
     toast('success', 'Employee Grade added successfully');
     showEmployeeGradeDialog.value = false;
     // Reload employee grades and set new value
-    const res = await axios.get('http://localhost:9090/api/employee-grades/dropdown');
+    const res = await apiClient.get('/api/employee-grades/dropdown');
     employeeGrades.value = res.data;
     const newItem = res.data.find(item => item.id === resSave.data.id);
     otherDetails.value.employeeGrade = newItem || '';
@@ -1335,7 +1338,7 @@ const saveSubDepartment = async () => {
     return;
   }
   try {
-    const resSave = await axios.post("http://localhost:9090/api/sub-departments", {
+    const resSave = await apiClient.post("/api/sub-departments", {
       name: newSubDepartment.name,
       code: newSubDepartment.code,
       description: newSubDepartment.description,
@@ -1370,7 +1373,7 @@ const saveSubDivision = async () => {
     return;
   }
   try {
-    const resSave = await axios.post("http://localhost:9090/api/sub-divisions", {
+    const resSave = await apiClient.post("/api/sub-divisions", {
       name: newSubDivision.name,
       code: newSubDivision.code,
       description: newSubDivision.description,
@@ -1423,15 +1426,15 @@ const loadMasterData = async () => {
       categoriesRes,
       employeeGradesRes
     ] = await Promise.all([
-      axios.get('http://localhost:9090/api/branches/dropdown'),
-      axios.get('http://localhost:9090/api/departments/dropdown'),
-      axios.get('http://localhost:9090/api/sub-departments/dropdown'),
-      axios.get('http://localhost:9090/api/designations/dropdown'),
-      axios.get('http://localhost:9090/api/regions/dropdown'),
-      axios.get('http://localhost:9090/api/divisions/dropdown'),
-      axios.get('http://localhost:9090/api/sub-divisions/dropdown'),
-      axios.get('http://localhost:9090/api/categories/dropdown'),
-      axios.get('http://localhost:9090/api/employee-grades/dropdown')
+      apiClient.get('/api/branches/dropdown'),
+      apiClient.get('/api/departments/dropdown'),
+      apiClient.get('/api/sub-departments/dropdown'),
+      apiClient.get('/api/designations/dropdown'),
+      apiClient.get('/api/regions/dropdown'),
+      apiClient.get('/api/divisions/dropdown'),
+      apiClient.get('/api/sub-divisions/dropdown'),
+      apiClient.get('/api/categories/dropdown'),
+      apiClient.get('/api/employee-grades/dropdown')
     ])
 
     branches.value = branchesRes.data
@@ -1456,7 +1459,7 @@ const loadSubDepartmentsByDepartment = async (departmentId) => {
     return
   }
   try {
-    const res = await axios.get(`http://localhost:9090/api/sub-departments/dropdown/by-department/${departmentId}`)
+    const res = await apiClient.get(`/api/sub-departments/dropdown/by-department/${departmentId}`)
     subDepartments.value = res.data
   } catch (err) {
     console.error('Failed to load subdepartments:', err)
@@ -1470,7 +1473,7 @@ const loadSubDivisionsByDivision = async (divisionId) => {
     return
   }
   try {
-    const res = await axios.get(`http://localhost:9090/api/sub-divisions/dropdown/by-division/${divisionId}`)
+    const res = await apiClient.get(`/api/sub-divisions/dropdown/by-division/${divisionId}`)
     subDivisions.value = res.data
   } catch (err) {
     console.error('Failed to load subdivisions:', err)
@@ -1495,7 +1498,7 @@ const handleDivisionChange = (division) => {
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:9090/api/countries')
+    const res = await apiClient.get('/api/countries')
     countries.value = res.data
     
     // Load all master data

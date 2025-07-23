@@ -26,6 +26,9 @@
 
 <script>
 import axios from 'axios';
+import apiClient from '@/utils/api';
+
+// const res = await apiClient.get('/api/divisions/dropdown');
 
 export default {
   name: 'EmployeeLanding',
@@ -49,7 +52,7 @@ export default {
     },
     async fetchEmployees() {
       try {
-        const response = await axios.get('http://localhost:8080/api/users/all');
+        const response = await apiClient.get('/api/users/all');
         this.employees = response.data;
       } catch (error) {
         console.error('Error fetching employees:', error);
