@@ -1,0 +1,4 @@
+/* global.css or inside App.vue <style> */
+#webpack-dev-server-client-overlay {
+  display: none !important;
+}
