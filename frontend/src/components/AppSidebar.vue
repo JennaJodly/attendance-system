@@ -23,9 +23,10 @@
         </template>
 
         <v-list>
-          <v-list-item @click="loginAsAdmin">
-            <v-list-item-title>Login as Admin</v-list-item-title>
-          </v-list-item>
+         <v-list-item @click="loginAsAdmin" style="min-height: 36px; padding-top: 4px; padding-bottom: 4px;">
+  <v-list-item-title style="color: navy; font-weight: bold; font-size: 14px;">Log Out</v-list-item-title>
+</v-list-item>
+
         </v-list>
       </v-menu>
     </v-app-bar>
@@ -75,7 +76,7 @@ export default {
       hovering: false,
       pinned: false,
       menuItems: [
-        { title: "Dashboard", icon: "mdi-view-dashboard", route: "/" },
+        { title: "Dashboard", icon: "mdi-view-dashboard", route: "/dashboard" },
         { title: "Attendance", icon: "mdi-fingerprint", route: "/attendance" },
         { title: "Employee", icon: "mdi-account-group", route: "/employee" },
         { title: "Reports", icon: "mdi-chart-box", route: "/reports" },
@@ -88,8 +89,9 @@ export default {
       this.pinned = !this.pinned;
     },
     loginAsAdmin() {
-      // Add your login logic here
-      console.log("Login as Admin clicked");
+      this.$router.push({ path: '/' });
+      localStorage.removeItem('token');
+      localStorage.removeItem('employee_id');
     },
   },
 };
@@ -140,9 +142,9 @@ export default {
   padding-left: 8px;
 }
 
-.v-list-item:hover {
+/* .v-list-item:hover {
   background-color: #1a2d5a !important;
-}
+} */
 
 .v-list-item--active {
   background-color: #336699 !important;

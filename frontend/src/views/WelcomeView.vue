@@ -44,17 +44,29 @@ export default {
   });
 },
     capturePhoto() {
-      const video = this.$refs.video;
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const context = canvas.getContext("2d");
-      context.drawImage(video, 0, 0);
-      this.capturedImage = canvas.toDataURL("image/jpeg");
-      video.srcObject.getTracks().forEach((track) => track.stop());
-      this.showCamera = false;
-      this.$router.push('/attendance');
-    },
+  const video = this.$refs.video;
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const context = canvas.getContext("2d");
+
+  context.drawImage(video, 0, 0);
+  const base64Image = canvas.toDataURL("image/jpeg");
+
+  this.capturedImage = base64Image;
+
+  // ⬇️ Save base64 image to localStorage
+  localStorage.setItem("capturedPhoto", base64Image);
+
+  // ⬇️ Stop camera
+  video.srcObject.getTracks().forEach((track) => track.stop());
+
+  this.showCamera = false;
+
+  // ⬇️ Navigate to attendance
+  this.$router.push('/attendance');
+},
+
     markAttendance(type) {
       const payload = {
         employeeId: "demo-emp-1",

@@ -3,7 +3,9 @@
     <GearLoader  :show="loading" />
 
     <v-dialog v-model="showComponentDialog" max-width="500px" persistent>
-      <v-card>
+      <v-card class="pa-6 elevation-5"
+    color="white"
+    style="border: 2px solid #D8C4B6; border-radius: 16px;">
         <v-card-title class="text-h6">Add Component</v-card-title>
         <v-card-text>
           <v-text-field
@@ -25,7 +27,9 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="showMachineDialog" max-width="500px" persistent>
-      <v-card>
+      <v-card class="pa-6 elevation-5"
+    color="white"
+    style="border: 2px solid #D8C4B6; border-radius: 16px;">
         <v-card-title class="text-h6">Add Machine</v-card-title>
         <v-card-text>
           <v-text-field
@@ -49,48 +53,111 @@
 
     <v-row justify="space-between">
       <!-- Attendance Card -->
-      <v-col cols="12" md="6">
-        <v-card class="pa-4 elevation-4" color="white" style="border: 2px #D8C4B6 solid;">
-          <h3 class="text-h6 font-weight-bold mb-2">Welcome</h3>
-          <p class="mb-4">{{ today }}</p>
-          <v-row align="center" justify="center" class="mb-4">
-            <v-img :src="photoUrl" max-width="120" class="rounded-circle" />
-          </v-row>
-          <v-row justify="center">
-            <v-btn color="primary" size="small" class="ma-2" @click="markIn" v-if="!inMarked">ATTENDANCE IN</v-btn>
-            <v-btn 
-              color="primary" 
-              size="small" 
-              class="ma-2" 
-              @click="markOut" 
-              v-else-if="inMarked && !outMarked"
-              :disabled="!isOutEnabled"
-            >
-              ATTENDANCE OUT
-              <span v-if="!isOutEnabled" class="ml-2">({{ remainingTime }})</span>
-            </v-btn>
-            <v-btn color="primary" size="small" class="ma-2" disabled v-else>ATTENDANCE MARKED</v-btn>
-          </v-row>
-          <!-- Always show attendance info if marked -->
-          <div v-if="inMarked">
-            <div class="mt-2"><strong>Attendance In:</strong> {{ attendanceIn }}</div>
-          </div>
-          <div v-if="outMarked">
-            <div class="mt-2"><strong>Attendance Out:</strong> {{ attendanceOut }}</div>
-          </div>
-          <div v-if="inMarked && outMarked">
-            <div class="mt-2"><strong>Duration Worked:</strong> {{ duration }}</div>
-          </div>
-          <!-- Show time remaining until out is enabled -->
-          <div v-if="inMarked && !outMarked && !isOutEnabled" class="mt-2 text-orange">
-            <strong>Time until out enabled:</strong> {{ remainingTime }}
-          </div>
-        </v-card>
+     <v-col cols="12" md="6">
+  <v-card
+    class="pa-6 elevation-5"
+    color="white"
+    style="border: 2px solid #D8C4B6; border-radius: 16px;"
+  >
+    <!-- Header Row: Welcome Text + Avatar -->
+    <v-row align="center" justify="space-between" class="mb-4">
+  <div>
+    <h2 class="text-h5 font-weight-bold mb-1">Welcome</h2>
+    <p class="text-grey-darken-1">{{ today }}</p>
+  </div>
+
+  <v-chip color="pink lighten-3" text-color="white" class="mb-2 mr-2">
+    You 😊
+  </v-chip>
+
+  <v-avatar size="72" color="blue-grey-lighten-5" class="elevation-3">
+    <v-img :src="savedPhoto" alt="Captured Photo" />
+  </v-avatar>
+</v-row>
+
+
+    <!-- Attendance Buttons -->
+    <v-row justify="center" class="mb-4">
+      <v-btn
+        color="success"
+        variant="flat"
+        size="small"
+        class="ma-2 rounded-pill px-6 text-white"
+        @click="markIn"
+        v-if="!inMarked"
+      >
+        ATTENDANCE IN
+      </v-btn>
+      <v-btn
+        color="primary"
+        variant="flat"
+        size="small"
+        class="ma-2 rounded-pill px-6 text-white"
+        @click="markOut"
+        v-else-if="inMarked && !outMarked"
+        :disabled="!isOutEnabled"
+      >
+        ATTENDANCE OUT
+        <span v-if="!isOutEnabled" class="ml-2">({{ remainingTime }})</span>
+      </v-btn>
+      <v-btn
+        color="grey"
+        size="small"
+        class="ma-2 rounded-pill px-6"
+        disabled
+        v-else
+      >
+        ATTENDANCE MARKED
+      </v-btn>
+    </v-row>
+
+    <!-- Attendance Info -->
+    <v-divider class="my-4"></v-divider>
+
+    <v-row no-gutters>
+      <v-col cols="12" class="mb-2" v-if="inMarked">
+        <strong class="text-blue-darken-2">Attendance In: </strong>
+        <span>{{ attendanceIn }}</span>
       </v-col>
+      <v-col cols="12" class="mb-2" v-if="outMarked">
+        <strong class="text-deep-purple-darken-2">Attendance Out: </strong>
+        <span>{{ attendanceOut }}</span>
+      </v-col>
+      <v-col cols="12" class="mb-2" v-if="inMarked && outMarked">
+        <strong class="text-green-darken-2">Duration Worked:</strong>
+        <span>{{ duration }}</span>
+      </v-col>
+      <v-col cols="12" v-if="inMarked && !outMarked && !isOutEnabled">
+        <span class="text-orange font-weight-medium">
+          ⏳ Time until out enabled: {{ remainingTime }}
+        </span>
+      </v-col>
+    </v-row>
+  </v-card>
+</v-col>
+
+      <!-- <v-col cols="12" md="6">
+  <v-card class="pa-4 elevation-4 d-flex align-center justify-center" color="white" style="border: 2px #D8C4B6 solid;">
+    <div class="text-center">
+      <h3 class="text-h6 font-weight-bold mb-2">Captured Photo</h3>
+      <v-img
+        :src="savedPhoto"
+        max-width="200"
+        max-height="200"
+        class="rounded-circle"
+        v-if="savedPhoto"
+      />
+      <p v-else class="mt-2 text-grey">No photo available</p>
+    </div>
+  </v-card>
+</v-col> -->
+
 
       <!-- Leave Request Card -->
       <v-col cols="12" md="6">
-        <v-card class="pa-4 elevation-4" color="white" style="border: 2px  #D8C4B6 solid;">
+        <v-card class="pa-6 elevation-5"
+    color="white"
+    style="border: 2px solid #D8C4B6; border-radius: 16px;">
           <h3 class="text-h6 font-weight-bold mb-4">Leave Requests</h3>
           <v-row dense>
             <v-col cols="12" sm="6">
@@ -153,7 +220,9 @@
     <!-- Bottom Row Table -->
     <v-row class="mt-6 align-center">
   <v-col cols="12">
-    <v-card class="pa-4 elevation-4" color="white" style="border: 2px #D8C4B6 solid;">
+    <v-card class="pa-6 elevation-5"
+    color="white"
+    style="border: 2px solid #D8C4B6; border-radius: 16px;">
       <v-data-table
         :headers="tableHeaders"
         :items="tableRows"
@@ -290,6 +359,8 @@ const today = new Date().toLocaleDateString('en-US', {
 
 const newComponent = reactive({ name: "", description: "" });
 const newMachine = reactive({ name: "", description: "" });
+const savedPhoto = ref(localStorage.getItem("capturedPhoto"));
+
 
 // Attendance
 const photoUrl = '/photos/sample.jpg'
@@ -342,7 +413,9 @@ const remainingTime = computed(() => {
   
   return `${hours}h ${minutes}m ${seconds}s`
 })
-
+onMounted(() => {
+  savedPhoto.value = localStorage.getItem('capturedPhoto');
+});
 const fetchComponents = async () => {
   const res = await apiClient.get('/api/components/dropdown');
   components.value = res.data;

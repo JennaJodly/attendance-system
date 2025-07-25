@@ -1,13 +1,21 @@
 <template>
-  <v-app>
-    <AppSidebar />
-  </v-app>
+  <component :is="layoutComponent">
+    <router-view />
+  </component>
 </template>
 
-<script>
-import AppSidebar from "@/components/AppSidebar.vue";
+<script setup>
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
 
-export default {
-  components: { AppSidebar },
-};
+// Import both layouts
+import AppSidebar from './components/AppSidebar.vue' // your full layout
+import WelcomeView from './views/WelcomeView.vue'
+const BlankLayout = { template: '<slot />' } 
+
+const route = useRoute()
+
+const layoutComponent = computed(() =>
+  route.path === '/' ? WelcomeView : AppSidebar
+)
 </script>
