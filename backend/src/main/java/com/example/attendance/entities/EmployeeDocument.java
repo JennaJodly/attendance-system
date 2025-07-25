@@ -25,7 +25,9 @@ public class EmployeeDocument {
     @Column(columnDefinition = "TEXT")
     private String fileData; // base64 or file path
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+@JoinColumn(name = "employee_id")
+private Employee employee;
+
 }

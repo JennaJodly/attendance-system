@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -71,5 +72,11 @@ public class Employee {
 
     private Boolean active;
     
-    
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+private List<EmployeeDocument> documents;
+
+@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+private List<EmployeeBank> bankDetails;
+
+
 }

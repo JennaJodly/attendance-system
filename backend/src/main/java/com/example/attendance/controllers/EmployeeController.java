@@ -19,10 +19,21 @@ public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @PostMapping("/add")
-    public Employee addEmployee(@RequestBody Employee employee) {
-        return employeeRepository.save(employee);
+   @PostMapping("/add")
+public Employee addEmployee(@RequestBody Employee employee) {
+    // ✅ Link each document to the parent employee
+    if (employee.getDocuments() != null) {
+        employee.getDocuments().forEach(doc -> doc.setEmployee(employee));
     }
+
+    // ✅ Link each bank detail to the parent employee
+    if (employee.getBankDetails() != null) {
+        employee.getBankDetails().forEach(bank -> bank.setEmployee(employee));
+    }
+
+    // ✅ Save employee; cascades to both documents and bank details
+    return employeeRepository.save(employee);
+}
 
     @GetMapping("/all")
 public List<Map<String, Object>> getAllEmployees() {

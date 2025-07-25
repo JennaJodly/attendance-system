@@ -480,11 +480,19 @@
                       dense
                     />
                   </v-col>
-                  <v-col cols="12" sm="1">
-                    <v-btn icon @click="onDocumentUpload(idx)">
-                      <v-icon>mdi-upload</v-icon>
-                    </v-btn>
-                  </v-col>
+                 <v-col cols="12" sm="1">
+  <input
+    type="file"
+    :ref="'fileInput' + idx"
+    style="display: none"
+    @change="onFileSelected($event, idx)"
+    accept=".pdf,image/*"
+  />
+  <v-btn icon @click="triggerFileInput(idx)">
+    <v-icon>mdi-upload</v-icon>
+  </v-btn>
+</v-col>
+
                   <v-col cols="12" sm="2" class="d-flex align-center">
                     <v-btn
                       icon
@@ -1038,7 +1046,21 @@ const submitForm = async () => {
   appraiser1: otherDetails.value.appraiser1 || null,
   appraiser2: otherDetails.value.appraiser2 || null,
   reviewer: otherDetails.value.reviewer || null,
-  effFrom: otherDetails.value.effectiveFrom || null
+  effFrom: otherDetails.value.effectiveFrom || null,
+
+  documents: documents.value.map(doc => ({
+      documentName: doc.name || '',
+      documentNo: doc.number || '',
+      startDate: doc.start || null,
+      expiryDate: doc.expiry || null,
+      fileData: doc.file || '', // should be base64 string
+    })),
+
+    bankDetails: bankDetails.value.map(bank => ({
+      bankName: bank.bankName || '',
+      accountNo: bank.accountNo || '',
+      ifsc: bank.ifsc || '',
+    })),
   };
 
   console.log("Submitting payload:", payload);
@@ -1118,9 +1140,25 @@ const addDocumentRow = () => {
 const removeDocumentRow = (idx) => {
   if (documents.value.length > 1) documents.value.splice(idx, 1);
 };
-const onDocumentUpload = (idx) => {
-  /* handle upload logic if needed */
+const triggerFileInput = (idx) => {
+  const input = document.querySelector(`input[ref='fileInput${idx}']`);
+  input?.click();
 };
+
+const onFileSelected = (e, idx) => {
+  const file = e.target.files[0];
+  if (file) {
+    documents.value[idx].file = file;
+
+    // Optional: show preview (PDF icon or image preview)
+    const reader = new FileReader();
+    reader.onload = () => {
+      documents.value[idx].preview = reader.result; // Base64 for preview only
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
 
 // Bank Details
 const addBankRow = () => {

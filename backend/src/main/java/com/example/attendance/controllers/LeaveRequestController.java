@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-@CrossOrigin(origins = "*")
+// @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/leave_request")
 public class LeaveRequestController {
