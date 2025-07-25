@@ -129,12 +129,15 @@
             <v-avatar size="50">
               <v-img :src="form.photo || defaultAvatar" alt="Profile" />
             </v-avatar>
-            <v-file-input
-              class="ml-4"
-              accept="image/*"
-              label="Upload Photo"
-              @change="handlePhotoUpload"
-            />
+           <v-file-input
+  class="ml-4"
+  accept="image/*"
+  label="Upload Photo"
+  :multiple="false"
+  @update:model-value="handlePhotoUpload"
+/>
+
+
           </v-col>
           <!-- Fingerprint Scan -->
           <v-col cols="12" sm="6" md="3" class="d-flex flex-column align-center justify-center">
@@ -302,7 +305,7 @@
                         :items="divisions"
                         item-title="name"
                         item-value="id"
-                        v-model="otherDetails.channelDivision"
+                        v-model="otherDetails.division"
                         return-object
                         @update:model-value="handleDivisionChange"
                       />
@@ -329,7 +332,7 @@
                         item-value="id"
                         v-model="otherDetails.subChannel"
                         return-object
-                        :disabled="!otherDetails.channelDivision"
+                        :disabled="!otherDetails.division"
                       />
                       <v-btn
                         icon
@@ -978,7 +981,7 @@ const otherDetails = ref({
   subDepartment: "",
   designation: "",
   region: "",
-  channelDivision: "",
+  division: "",
   subChannel: "",
   categoryProduct: "",
   employeeGrade: "",
@@ -993,24 +996,49 @@ const otherDetails = ref({
   effectiveFrom: "",
 });
 
-const handlePhotoUpload = (e) => {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    form.value.photo = reader.result;
-  };
-  if (file) reader.readAsDataURL(file);
-};
+const handlePhotoUpload = (uploadedFile) => {
+  console.log("Uploaded File:", uploadedFile); // 🧪 CHECK HERE
 
+  const file = Array.isArray(uploadedFile) ? uploadedFile[0] : uploadedFile;
+
+  if (!file || !(file instanceof File)) {
+    console.error("Invalid file selected:", file);
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    form.photo = reader.result;
+    console.log("Base64 Encoded:", form.photo); // 🧪 CONFIRM BASE64 HERE
+  };
+  reader.readAsDataURL(file);
+};
 
 const submitForm = async () => {
   const payload = {
     ...form.value,
+    active: true,
     name: `${form.value.firstName} ${form.value.lastName}`,
     address: form.address1 + form.address2,
     countryCode: form.value.country?.code || "",
     stateCode: form.value.state?.code || "",
     cityCode: form.value.city?.code || "",
+    photo: form.photo || null,
+   branch: otherDetails.value.branch?.id || null,
+  department: otherDetails.value.department?.id || null,
+  subDepartment: otherDetails.value.subDepartment?.id || null,
+  designation: otherDetails.value.designation?.id || null,
+  region: otherDetails.value.region?.id || null,
+  division: otherDetails.value.division?.id || null,
+  subDivision: otherDetails.value.subChannel?.id || null,
+  category: otherDetails.value.categoryProduct?.id || null,
+  empGrade: otherDetails.value.employeeGrade?.id || null,
+  reportingTo: otherDetails.value.reportingTo || null,
+  noOfApp: otherDetails.value.noOfAppraisers || null,
+  appraiser1: otherDetails.value.appraiser1 || null,
+  appraiser2: otherDetails.value.appraiser2 || null,
+  reviewer: otherDetails.value.reviewer || null,
+  effFrom: otherDetails.value.effectiveFrom || null
   };
 
   console.log("Submitting payload:", payload);
@@ -1334,7 +1362,7 @@ const saveDivision = async () => {
     const res = await apiClient.get('/api/divisions/dropdown');
     divisions.value = res.data;
     const newItem = res.data.find(item => item.id === resSave.data.id);
-    otherDetails.value.channelDivision = newItem || '';
+    otherDetails.value.division = newItem || '';
     Object.assign(newDivision, { name: '', code: '', description: '' });
   } catch (err) {
     console.error("Error adding division", err);
