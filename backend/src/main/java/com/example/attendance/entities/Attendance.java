@@ -100,6 +100,11 @@ public class Attendance {
         this.photoPath = photoPath;
     }
 
+    public String getPhoneNumber() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPhoneNumber'");
+    }
+
     // public Object getOutTime() {
     //     // TODO Auto-generated method stub
     //     throw new UnsupportedOperationException("Unimplemented method 'getOutTime'");
