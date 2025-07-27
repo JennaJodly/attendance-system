@@ -78,5 +78,8 @@ private List<EmployeeDocument> documents;
 @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
 private List<EmployeeBank> bankDetails;
 
+    public String getName() {
+        return firstName + " " + lastName;
+    }
 
 }
