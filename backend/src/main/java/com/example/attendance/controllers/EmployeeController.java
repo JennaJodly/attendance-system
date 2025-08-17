@@ -34,6 +34,23 @@ public Employee addEmployee(@RequestBody Employee employee) {
     // ✅ Save employee; cascades to both documents and bank details
     return employeeRepository.save(employee);
 }
+@GetMapping("/fingerprints")
+public List<Map<String, Object>> getEmployeeFingerprints() {
+    List<Employee> employees = employeeRepository.findAll();
+
+    List<Map<String, Object>> fingerprints = new ArrayList<>();
+
+    for (Employee e : employees) {
+        if (e.getFingerprint() != null && !e.getFingerprint().isEmpty()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", e.getId());
+            map.put("fingerprint", e.getFingerprint());
+            fingerprints.add(map);
+        }
+    }
+    return fingerprints;
+}
+
 
     @GetMapping("/all")
 public List<Map<String, Object>> getAllEmployees() {
