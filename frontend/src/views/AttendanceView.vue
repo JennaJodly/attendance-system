@@ -124,7 +124,7 @@
         <span>{{ attendanceOut }}</span>
       </v-col>
       <v-col cols="12" class="mb-2" v-if="inMarked && outMarked">
-        <strong class="text-green-darken-2">Duration Worked:</strong>
+        <strong class="text-green-darken-2">Duration Worked: </strong>
         <span>{{ duration }}</span>
       </v-col>
       <v-col cols="12" v-if="inMarked && !outMarked && !isOutEnabled">
@@ -241,6 +241,7 @@
               hide-details
               return-object
               style="max-width: 250px;"
+              :disabled="!isOutEnabled"
             />
             <v-btn
               icon
@@ -267,6 +268,7 @@
       hide-details
       return-object
       style="max-width: 250px;"
+      :disabled="!isOutEnabled"
     />
     <v-btn
       icon
@@ -325,6 +327,7 @@
             size="small"
             class="mt-4"
             @click="submitAttendance"
+            :disabled="!isOutEnabled"
           >
             Submit
           </v-btn>

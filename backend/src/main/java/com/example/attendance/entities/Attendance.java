@@ -100,15 +100,4 @@ public class Attendance {
         this.photoPath = photoPath;
     }
 
-    // public Object getOutTime() {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'getOutTime'");
-    // }
-
-    // public Object getStatus() {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
-    // }
-
-    // Remove unused/unimplemented methods like getOutTime(), getStatus()
 }

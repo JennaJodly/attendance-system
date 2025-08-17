@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -78,5 +79,17 @@ public List<Map<String, Object>> getAllEmployees() {
 
     return result;
 }
+
+ @GetMapping("/list")
+    public List<Map<String, Object>> getEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+
+        return employees.stream().map(emp -> {
+            Map<String, Object> dto = new HashMap<>();
+            dto.put("id", emp.getId());
+            dto.put("name", emp.getName());
+            return dto;
+        }).collect(Collectors.toList());
+    }
 
 }

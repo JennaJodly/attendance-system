@@ -1,7 +1,10 @@
 package com.example.attendance.controllers;
 
 import com.example.attendance.entities.Attendance;
+import com.example.attendance.entities.Employee;
 import com.example.attendance.repositories.AttendanceRepository;
+import com.example.attendance.repositories.EmployeeRepository;
+import com.example.attendance.service.SmsService;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -38,37 +41,65 @@ public class AttendanceController {
     }
 
     // ✅ Mark OUT
-    @PutMapping("/out/{employeeId}")
-    public ResponseEntity<?> markAttendanceOut(
+   @Autowired
+private SmsService smsService;
+
+@Autowired
+private EmployeeRepository employeeRepository;
+@PutMapping("/out/{employeeId}")
+public ResponseEntity<?> markAttendanceOut(
         @PathVariable Long employeeId,
-        @RequestBody Map<String, Object> payload
-    ) {
-        try {
-            String outTimeStr = (String) payload.get("outTime");
-            Integer durationWorked = (Integer) payload.get("durationWorked");
+        @RequestBody Map<String, Object> payload) {
 
-            if (outTimeStr == null || durationWorked == null) {
-                return ResponseEntity.badRequest().body("Missing outTime or durationWorked");
-            }
+    try {
+        String outTimeStr = (String) payload.get("outTime");
+        Integer durationWorked = (Integer) payload.get("durationWorked");
 
-            Attendance attendance = attendanceRepository.findTopByEmployeeIdOrderByInDateDesc(employeeId);
-            if (attendance == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Attendance record not found");
-            }
-
-            LocalTime outTime = LocalTime.parse(outTimeStr);
-            attendance.setAttendanceOut(outTime);
-            attendance.setDurationWorked(durationWorked);
-
-            attendanceRepository.save(attendance);
-            return ResponseEntity.ok("Attendance OUT updated successfully");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error updating OUT time");
+        if (outTimeStr == null || durationWorked == null) {
+            return ResponseEntity.badRequest().body("Missing outTime or durationWorked");
         }
+
+        Attendance attendance = attendanceRepository.findTopByEmployeeIdOrderByInDateDesc(employeeId);
+        if (attendance == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Attendance record not found");
+        }
+
+        LocalTime outTime = LocalTime.parse(outTimeStr);
+        attendance.setAttendanceOut(outTime);
+        attendance.setDurationWorked(durationWorked);
+        attendanceRepository.save(attendance);
+
+        // ✅ Fetch employee and get official number
+        Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
+        if (employeeOpt.isEmpty() || employeeOpt.get().getOfficialNo() == null) {
+            return ResponseEntity.badRequest().body("Official phone number not found");
+        }
+
+        String phoneNumber = employeeOpt.get().getOfficialNo().trim();
+        if (!phoneNumber.startsWith("+91")) {
+            phoneNumber = "+91" + phoneNumber;
+        }
+
+        // ✅ Send SMS
+        int hours = durationWorked / 60;
+        int minutes = durationWorked % 60;
+
+       String message = "Hi " + employeeOpt.get().getFirstName() + "," + "\n" +
+                 "Your attendance OUT has been marked at " + outTime + "\n" +
+                 "Duration worked: " + hours + "h " + minutes + "m.";
+        smsService.sendSms(phoneNumber, message);
+
+
+
+        return ResponseEntity.ok("Attendance OUT updated and SMS sent to " + phoneNumber);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating OUT time");
     }
+}
+
+
 
     // ✅ Get Status
     @GetMapping("/status")

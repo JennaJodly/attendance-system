@@ -35,6 +35,13 @@
             <version>42.6.0</version>
         </dependency>
 
+       <dependency>
+  <groupId>com.twilio.sdk</groupId>
+  <artifactId>twilio</artifactId>
+  <version>8.31.1</version>
+</dependency>
+
+
         <!-- Lombok (optional) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
